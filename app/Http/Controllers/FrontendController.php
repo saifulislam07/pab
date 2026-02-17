@@ -11,6 +11,10 @@ class FrontendController extends Controller {
         return view('frontend.about');
     }
 
+    public function missionVision() {
+        return view('frontend.mission-vision');
+    }
+
     public function team() {
         return view('frontend.team');
     }

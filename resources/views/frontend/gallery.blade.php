@@ -24,12 +24,9 @@
         <!-- Masonry Grid -->
         <div class="columns-1 md:columns-3 lg:columns-4 gap-4 space-y-4" x-data="{ items: {{ Js::from($items) }} }">
             <template x-for="item in items.filter(i => filter === 'all' || i.category === filter)" :key="item.id">
-                <div class="break-inside-avoid relative group overflow-hidden rounded-lg cursor-pointer mb-4"
-                     @click="modalOpen = true; modalImage = item.image + '?q=80&w=1200&auto=format&fit=crop'"
-                     x-data="{ shown: false }" x-intersect="shown = true" 
-                     :class="{ 'opacity-0 translate-y-4': !shown, 'opacity-100 translate-y-0': shown }" 
-                     class="transition duration-700">
-                    <img :src="item.image + '?q=80&w=600&auto=format&fit=crop'" class="w-full object-cover transition duration-700 group-hover:scale-110">
+                <div class="break-inside-avoid relative group overflow-hidden rounded-lg cursor-pointer mb-4 animate-fade-in"
+                     @click="modalOpen = true; modalImage = item.image + '?q=80&w=1200&auto=format&fit=crop'">
+                    <img :src="item.image + '?q=80&w=600&auto=format&fit=crop'" class="w-full object-cover transition duration-700 group-hover:scale-110" :alt="item.title || 'Gallery Image'">
                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
                         <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
                     </div>

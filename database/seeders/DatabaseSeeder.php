@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder {
 
         // Seed Members
         $roles = ['President', 'Secretary', 'Treasurer', 'Member'];
-        for ($i = 1; $i <= 20; $i++) {
+        for ($i = 1; $i <= 100; $i++) {
             \App\Models\Member::create([
                 'name'  => 'Member ' . $i,
                 'role'  => $roles[array_rand($roles)],

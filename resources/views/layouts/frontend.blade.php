@@ -21,6 +21,13 @@
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.7s ease-out forwards;
+        }
     </style>
 </head>
 <body class="font-sans antialiased bg-gray-900 text-gray-100 selection:bg-red-500 selection:text-white">
@@ -46,6 +53,7 @@
                         @foreach([
                             'Home' => 'home',
                             'About' => 'about',
+                            'Mission & Vision' => 'mission-vision',
                             'Team' => 'team',
                             'Members' => 'members',
                             'Registration' => 'registration',
@@ -86,6 +94,7 @@
                     @foreach([
                         'Home' => 'home',
                         'About' => 'about',
+                        'Mission & Vision' => 'mission-vision',
                         'Team' => 'team',
                         'Members' => 'members',
                         'Registration' => 'registration',
