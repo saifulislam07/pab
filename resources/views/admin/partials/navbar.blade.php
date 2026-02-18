@@ -11,13 +11,26 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="btn btn-link nav-link">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-            </form>
+        <!-- Profile Link -->
+        <li class="nav-item dropdown">
+            <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
+                <img src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&size=30&background=007bff&color=fff' }}"
+                     class="img-circle" alt="User"
+                     style="width: 28px; height: 28px; object-fit: cover; margin-top: -4px;">
+                <span class="d-none d-md-inline ml-1">{{ Auth::user()->name }}</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a href="{{ route('admin.profile.edit') }}" class="dropdown-item">
+                    <i class="fas fa-user-edit mr-2"></i> My Profile
+                </a>
+                <div class="dropdown-divider"></div>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="dropdown-item text-danger">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                    </button>
+                </form>
+            </div>
         </li>
     </ul>
 </nav>

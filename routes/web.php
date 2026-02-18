@@ -11,6 +11,7 @@ Route::controller(FrontendController::class)->group(function () {
     Route::get('/members', 'members')->name('members');
     Route::get('/registration', 'registration')->name('registration');
     Route::get('/gallery', 'gallery')->name('gallery');
+    Route::get('/gallery-items', 'galleryItems')->name('gallery.items');
     Route::get('/contact', 'contact')->name('contact');
 });
 
@@ -23,6 +24,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
+    // Admin Profile
+    Route::get('/admin/profile', [App\Http\Controllers\Admin\AdminProfileController::class, 'edit'])->name('admin.profile.edit');
+    Route::put('/admin/profile', [App\Http\Controllers\Admin\AdminProfileController::class, 'update'])->name('admin.profile.update');
+
     Route::get('/admin/about', [App\Http\Controllers\Admin\AboutController::class, 'edit'])->name('admin.about.edit');
     Route::put('/admin/about', [App\Http\Controllers\Admin\AboutController::class, 'update'])->name('admin.about.update');
 
@@ -51,6 +56,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // Sponsor & Event Routes
     Route::resource('admin/sponsors', App\Http\Controllers\Admin\SponsorController::class)->names('admin.sponsors');
     Route::resource('admin/events', App\Http\Controllers\Admin\EventController::class)->names('admin.events');
+
+    // Advertisements
+    Route::resource('admin/advertisements', App\Http\Controllers\Admin\AdvertisementController::class)->names('admin.advertisements');
+
+    // Menus
+    Route::resource('admin/menus', App\Http\Controllers\Admin\MenuController::class)->names('admin.menus');
+    Route::post('admin/menus/reorder', [App\Http\Controllers\Admin\MenuController::class, 'reorder'])->name('admin.menus.reorder');
 
     // User & RBAC Management
     Route::resource('admin/users', App\Http\Controllers\Admin\UserController::class)->names('admin.users')->only(['index', 'update', 'destroy']);

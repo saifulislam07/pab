@@ -32,6 +32,7 @@
             animation: fadeIn 0.7s ease-out forwards;
         }
     </style>
+    @stack('styles')
 </head>
 <body class="font-sans antialiased bg-gray-900 text-gray-100 selection:bg-red-500 selection:text-white">
     <div class="min-h-screen flex flex-col">
@@ -56,25 +57,42 @@
                     </div>
 
                     <!-- Desktop Menu -->
-                    <div class="hidden sm:flex sm:items-center sm:ml-6 space-x-8">
-                        @foreach([
-                            'Home' => 'home',
-                            'About' => 'about',
-                            'Mission & Vision' => 'mission-vision',
-                            'Team' => 'team',
-                            'Members' => 'members',
-                            'Events' => 'events.index',
-                            'Registration' => 'registration',
-                            'Gallery' => 'gallery',
-                            'Contact' => 'contact'
-                        ] as $label => $route)
-                            <a href="{{ route($route) }}" 
-                               class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out
-                                      {{ Route::currentRouteName() == $route 
-                                         ? 'border-red-500 text-white' 
-                                         : 'border-transparent text-gray-300 hover:text-white hover:border-gray-300' }}">
-                                {{ $label }}
-                            </a>
+                    <div class="hidden sm:flex sm:items-center sm:ml-6 space-x-1">
+                        @foreach($menus as $menu)
+                            @if($menu->children->count())
+                                {{-- Dropdown --}}
+                                <div class="relative group" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                                    <button class="inline-flex items-center px-3 py-2 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-300 hover:text-white hover:border-gray-300 transition duration-150 ease-in-out">
+                                        {{ $menu->title }}
+                                        <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </button>
+                                    <div x-show="open" 
+                                         x-transition:enter="transition ease-out duration-200"
+                                         x-transition:enter-start="opacity-0 scale-95"
+                                         x-transition:enter-end="opacity-100 scale-100"
+                                         x-transition:leave="transition ease-in duration-75"
+                                         x-transition:leave-start="opacity-100 scale-100"
+                                         x-transition:leave-end="opacity-0 scale-95"
+                                         class="absolute left-0 mt-0 w-48 bg-gray-800 rounded-md shadow-lg py-1 border border-gray-700 z-50">
+                                        @foreach($menu->children as $child)
+                                            <a href="{{ $child->url ? (Str::startsWith($child->url, 'http') ? $child->url : url($child->url)) : '#' }}" 
+                                               target="{{ $child->target }}"
+                                               class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition">
+                                                {{ $child->title }}
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @else
+                                <a href="{{ $menu->url ? (Str::startsWith($menu->url, 'http') ? $menu->url : url($menu->url)) : '#' }}" 
+                                   target="{{ $menu->target }}"
+                                   class="inline-flex items-center px-3 py-2 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out
+                                          {{ Request::is(trim($menu->url, '/')) || Request::url() == $menu->url
+                                             ? 'border-red-500 text-white' 
+                                             : 'border-transparent text-gray-300 hover:text-white hover:border-gray-300' }}">
+                                    {{ $menu->title }}
+                                </a>
+                            @endif
                         @endforeach
                         
                         @auth
@@ -99,23 +117,33 @@
             <!-- Mobile Menu -->
             <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-gray-900 border-b border-gray-800">
                 <div class="pt-2 pb-3 space-y-1">
-                    @foreach([
-                        'Home' => 'home',
-                        'About' => 'about',
-                        'Mission & Vision' => 'mission-vision',
-                        'Team' => 'team',
-                        'Members' => 'members',
-                        'Registration' => 'registration',
-                        'Gallery' => 'gallery',
-                        'Contact' => 'contact'
-                    ] as $label => $route)
-                        <a href="{{ route($route) }}" 
-                           class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition duration-150 ease-in-out
-                                  {{ Route::currentRouteName() == $route 
-                                     ? 'border-red-500 text-white bg-gray-800' 
-                                     : 'border-transparent text-gray-400 hover:text-white hover:bg-gray-800 hover:border-gray-300' }}">
-                            {{ $label }}
-                        </a>
+                    @foreach($menus as $menu)
+                        @if($menu->children->count())
+                            <div x-data="{ subOpen: false }">
+                                <button @click="subOpen = !subOpen" class="w-full flex justify-between items-center pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-gray-400 hover:text-white hover:bg-gray-800 transition">
+                                    {{ $menu->title }}
+                                    <svg class="h-4 w-4 transform transition-transform" :class="{'rotate-180': subOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                                <div x-show="subOpen" class="bg-gray-800/50 pl-6">
+                                    @foreach($menu->children as $child)
+                                        <a href="{{ $child->url ? (Str::startsWith($child->url, 'http') ? $child->url : url($child->url)) : '#' }}" 
+                                           target="{{ $child->target }}"
+                                           class="block py-2 text-sm font-medium text-gray-400 hover:text-white transition">
+                                            {{ $child->title }}
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @else
+                            <a href="{{ $menu->url ? (Str::startsWith($menu->url, 'http') ? $menu->url : url($menu->url)) : '#' }}" 
+                               target="{{ $menu->target }}"
+                               class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition duration-150 ease-in-out
+                                      {{ Request::is(trim($menu->url, '/')) || Request::url() == $menu->url
+                                         ? 'border-red-500 text-white bg-gray-800' 
+                                         : 'border-transparent text-gray-400 hover:text-white hover:bg-gray-800 hover:border-gray-300' }}">
+                                {{ $menu->title }}
+                            </a>
+                        @endif
                     @endforeach
 
                     <!-- Mobile Auth Links -->
@@ -193,5 +221,6 @@
             </div>
         </footer>
     </div>
+    @stack('scripts')
 </body>
 </html>

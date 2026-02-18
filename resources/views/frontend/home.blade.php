@@ -96,7 +96,7 @@
                      :class="{ 'opacity-0 scale-95': !shown, 'opacity-100 scale-100': shown }"
                      class="transition-all duration-1000 ease-out delay-300">
                     <div class="absolute inset-0 bg-red-500 transform translate-x-4 translate-y-4 rounded-lg"></div>
-                    <img src="{{ isset($about->image_main) ? asset('storage/' . $about->image_main) : 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=2000&auto=format&fit=crop' }}" 
+                    <img src="{{ isset($about->image_main) ? (Str::startsWith($about->image_main, ['http://', 'https://']) ? $about->image_main : asset('storage/' . $about->image_main)) : 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=2000&auto=format&fit=crop' }}" 
                          alt="{{ $about->title ?? 'Who We Are' }}" 
                          class="relative rounded-lg shadow-2xl grayscale hover:grayscale-0 transition duration-500 w-full h-[400px] object-cover">
                 </div>

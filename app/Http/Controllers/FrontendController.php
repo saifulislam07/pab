@@ -38,22 +38,39 @@ class FrontendController extends Controller {
         return view('frontend.members', compact('members'));
     }
 
-    public function events() {
-        $events = \App\Models\Event::where('is_active', true)
-            ->where(function ($query) {
-                $query->whereNull('end_date')
-                    ->orWhere('end_date', '>=', now()->toDateString());
-            })
-            ->latest()
-            ->paginate(9);
-        return view('frontend.events.index', compact('events'));
+    public function events(\Illuminate\Http\Request $request) {
+        $type = $request->query('type', 'current');
+        $today = now()->toDateString();
+
+        $query = \App\Models\Event::where('is_active', true);
+
+        if ($type === 'current') {
+            $query->where('start_date', '<=', $today)
+                ->where('end_date', '>=', $today);
+        } elseif ($type === 'past') {
+            $query->where('end_date', '<', $today);
+        } else {
+            // Default: Upcoming
+            $query->where('start_date', '>', $today);
+        }
+
+        $events = $query->latest()->paginate(10)->withQueryString();
+
+        $bannerAds = \App\Models\Advertisement::active()->where('position', 'banner')->get();
+        $sidebarAds = \App\Models\Advertisement::active()->where('position', 'sidebar')->get();
+
+        return view('frontend.events.index', compact('events', 'bannerAds', 'sidebarAds', 'type'));
     }
 
     public function eventShow($slug) {
         $event = \App\Models\Event::where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();
-        return view('frontend.events.show', compact('event'));
+
+        $bannerAds = \App\Models\Advertisement::active()->where('position', 'banner')->get();
+        $sidebarAds = \App\Models\Advertisement::active()->where('position', 'sidebar')->get();
+
+        return view('frontend.events.show', compact('event', 'bannerAds', 'sidebarAds'));
     }
 
     public function registration() {
@@ -61,9 +78,30 @@ class FrontendController extends Controller {
     }
 
     public function gallery() {
-        $items = \App\Models\GalleryItem::with('category')->get();
-        $categories = \App\Models\Category::all();
-        return view('frontend.gallery', compact('items', 'categories'));
+        $categories = \App\Models\Category::withCount('items')->get();
+        $totalItems = \App\Models\GalleryItem::count();
+        $items = \App\Models\GalleryItem::with('category')->latest()->paginate(12);
+
+        return view('frontend.gallery', compact('items', 'categories', 'totalItems'));
+    }
+
+    public function galleryItems(\Illuminate\Http\Request $request) {
+        $query = \App\Models\GalleryItem::with('category')->latest();
+
+        if ($request->category && $request->category !== 'all') {
+            $query->whereHas('category', function ($q) use ($request) {
+                $q->where('slug', $request->category);
+            });
+        }
+
+        $items = $query->paginate(12);
+
+        return response()->json([
+            'data'         => $items->items(),
+            'current_page' => $items->currentPage(),
+            'last_page'    => $items->lastPage(),
+            'has_more'     => $items->hasMorePages(),
+        ]);
     }
 
     public function contact() {

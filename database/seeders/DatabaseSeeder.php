@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder {
             AdminSeeder::class,
             RolesAndPermissionsSeeder::class,
             \Database\Seeders\SponsorEventSeeder::class,
+            HugeDataSeeder::class,
         ]);
 
         // Seed Members

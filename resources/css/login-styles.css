@@ -1,0 +1,103 @@
+/* Login Page Custom Styles */
+
+.login-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f8fafc;
+}
+
+.login-image-side {
+    position: relative;
+    flex: 1;
+    display: none;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+@media (min-width: 1024px) {
+    .login-image-side {
+        display: block;
+    }
+}
+
+.login-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom right,
+        rgba(15, 23, 42, 0.4),
+        rgba(88, 28, 135, 0.4)
+    );
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 3rem;
+    color: white;
+}
+
+.login-form-side {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 450px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+}
+
+.login-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.login-subtitle {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-bottom: 2rem;
+}
+
+.form-input-group {
+    margin-bottom: 1.5rem;
+}
+
+.custom-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+.custom-input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    outline: none;
+}
+
+.login-button {
+    width: 100%;
+    background-color: #1e293b;
+    color: white;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.login-button:hover {
+    background-color: #0f172a;
+    transform: translateY(-1px);
+}

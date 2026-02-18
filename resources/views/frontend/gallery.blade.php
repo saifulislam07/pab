@@ -6,25 +6,84 @@
         modalOpen: false, 
         currentIndex: 0, 
         filter: 'all',
+        page: 1,
+        loading: false,
+        hasMore: {{ $items->hasMorePages() ? 'true' : 'false' }},
         items: {{ Js::from($items->map(function($item) {
             $item->image_url = Str::startsWith($item->image, 'http') ? $item->image : asset('storage/' . $item->image);
             $item->category_slug = $item->category->slug ?? 'all';
             return $item;
         })) }},
-        get filteredItems() {
-            return this.filter === 'all' 
-                ? this.items 
-                : this.items.filter(i => i.category_slug === this.filter);
-        },
+        
         get currentItem() {
-            return this.filteredItems[this.currentIndex] || {};
+            if (!this.items || this.items.length === 0) return { image_url: '', title: '', category_slug: '' };
+            return this.items[this.currentIndex] || this.items[0] || { image_url: '', title: '', category_slug: '' };
         },
+
+        async loadMore() {
+            console.log('Load More clicked. Current page:', this.page, 'hasMore:', this.hasMore);
+            if (this.loading || !this.hasMore) return;
+            this.loading = true;
+            this.page++;
+            await this.fetchItems();
+            this.loading = false;
+        },
+
+        async changeFilter(newFilter) {
+            console.log('Changing filter to:', newFilter);
+            if (this.filter === newFilter) return;
+            
+            this.loading = true;
+            this.filter = newFilter;
+            this.page = 1;
+            // Don't clear items immediately to prevent Alpine x-for spot errors
+            // Instead, fetchItems will overwrite them
+            await this.fetchItems();
+            this.loading = false;
+        },
+
+        async fetchItems() {
+            try {
+                console.log(`Fetching items for page ${this.page}, category: ${this.filter}`);
+                // Use a relative URL to avoid CORS/Port issues in local development
+                const url = `/gallery-items?page=${this.page}&category=${this.filter}`;
+                const response = await fetch(url);
+                
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                const data = await response.json();
+                console.log('Fetched data:', data);
+                
+                const newItems = (data.data || []).map(item => {
+                    if (item.image) {
+                        item.image_url = item.image.startsWith('http') ? item.image : `/storage/${item.image}`;
+                    } else {
+                        item.image_url = 'https://via.placeholder.com/400x300?text=No+Image';
+                    }
+                    item.category_slug = item.category ? item.category.slug : 'all';
+                    return item;
+                });
+
+                if (this.page === 1) {
+                    this.items = newItems;
+                } else {
+                    this.items = [...this.items, ...newItems];
+                }
+                
+                this.hasMore = data.has_more;
+                console.log('Current items count:', this.items.length);
+            } catch (error) {
+                console.error('Error fetching gallery items:', error);
+                this.hasMore = false;
+            }
+        },
+
         openModal(item) {
-            this.currentIndex = this.filteredItems.indexOf(item);
+            this.currentIndex = this.items.indexOf(item);
             this.modalOpen = true;
         },
         next() {
-            if (this.currentIndex < this.filteredItems.length - 1) {
+            if (this.currentIndex < this.items.length - 1) {
                 this.currentIndex++;
             } else {
                 this.currentIndex = 0;
@@ -34,7 +93,7 @@
             if (this.currentIndex > 0) {
                 this.currentIndex--;
             } else {
-                this.currentIndex = this.filteredItems.length - 1;
+                this.currentIndex = this.items.length - 1;
             }
         }
      }"
@@ -51,19 +110,21 @@
 
         <!-- Category Filter -->
         <div class="flex flex-wrap justify-center gap-4 mb-10">
-            <button @click="filter = 'all'; currentIndex = 0" 
+            <button @click="changeFilter('all')" 
                     :class="{ 'bg-red-600 text-white': filter === 'all', 'bg-gray-800 text-gray-400 hover:bg-gray-700': filter !== 'all' }"
-                    class="px-6 py-2 rounded-full transition duration-300">All</button>
+                    class="px-6 py-2 rounded-full transition duration-300">All ({{ $totalItems }})</button>
             @foreach($categories as $category)
-                <button @click="filter = '{{ $category->slug }}'; currentIndex = 0" 
+                <button @click="changeFilter('{{ $category->slug }}')" 
                         :class="{ 'bg-red-600 text-white': filter === '{{ $category->slug }}', 'bg-gray-800 text-gray-400 hover:bg-gray-700': filter !== '{{ $category->slug }}' }"
-                        class="px-6 py-2 rounded-full transition duration-300 capitalize">{{ $category->name }}</button>
+                        class="px-6 py-2 rounded-full transition duration-300 capitalize">
+                    {{ $category->name }} ({{ $category->items_count }})
+                </button>
             @endforeach
         </div>
 
         <!-- Masonry Grid -->
-        <div class="columns-1 md:columns-3 lg:columns-4 gap-4 space-y-4">
-            <template x-for="(item, index) in filteredItems" :key="item.id">
+        <div class="columns-1 md:columns-3 lg:columns-4 gap-4 space-y-4 min-h-[400px]" x-cloak>
+            <template x-for="(item, index) in items" :key="item.id + '-' + filter + '-' + index">
                 <div class="break-inside-avoid relative group overflow-hidden rounded-lg cursor-pointer mb-4 animate-fade-in"
                      @click="openModal(item)">
                     <img :src="item.image_url" class="w-full object-cover transition duration-700 group-hover:scale-110" :alt="item.title || 'Gallery Image'">
@@ -72,6 +133,22 @@
                     </div>
                 </div>
             </template>
+        </div>
+
+        <!-- Load More Section -->
+        <div class="mt-16 text-center" x-show="hasMore">
+            <button @click="loadMore()" 
+                    :disabled="loading"
+                    class="inline-flex items-center px-8 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-full transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-red-600/20">
+                <span x-show="!loading">Load More Images</span>
+                <span x-show="loading" class="flex items-center">
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Loading...
+                </span>
+            </button>
         </div>
     </div>
 
@@ -108,7 +185,7 @@
                 <h3 class="text-white text-2xl font-bold" x-text="currentItem.title"></h3>
                 <p class="text-gray-400 mt-1 uppercase tracking-widest text-sm" x-text="currentItem.category_slug"></p>
                 <div class="text-gray-500 text-sm mt-2">
-                    <span x-text="currentIndex + 1"></span> of <span x-text="filteredItems.length"></span>
+                    <span x-text="currentIndex + 1"></span> of <span x-text="items.length"></span>
                 </div>
             </div>
         </div>
