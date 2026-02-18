@@ -27,7 +27,7 @@
                             </div>
                             <div class="ml-4">
                                 <h4 class="text-lg font-medium text-white">Phone</h4>
-                                <p class="mt-1 text-gray-400">+880 1234 567890</p>
+                                <p class="mt-1 text-gray-400">{{ $site_setting->contact_phone ?? '+880 1234 567890' }}</p>
                             </div>
                         </div>
                         
@@ -41,7 +41,7 @@
                             </div>
                             <div class="ml-4">
                                 <h4 class="text-lg font-medium text-white">Email</h4>
-                                <p class="mt-1 text-gray-400">info@pab.bt</p>
+                                <p class="mt-1 text-gray-400">{{ $site_setting->contact_email ?? 'info@pab.bt' }}</p>
                             </div>
                         </div>
 
@@ -56,7 +56,7 @@
                             </div>
                             <div class="ml-4">
                                 <h4 class="text-lg font-medium text-white">Address</h4>
-                                <p class="mt-1 text-gray-400">House 123, Road 45, Dhanmondi, Dhaka-1209</p>
+                                <p class="mt-1 text-gray-400">{{ $site_setting->address ?? 'House 123, Road 45, Dhanmondi, Dhaka-1209' }}</p>
                             </div>
                         </div>
                     </div>

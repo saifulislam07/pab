@@ -4,24 +4,56 @@ namespace App\Http\Controllers;
 
 class FrontendController extends Controller {
     public function index() {
-        return view('frontend.home');
+        $sliders = \App\Models\Slider::where('is_active', true)->orderBy('order')->get();
+        $mission = \App\Models\MissionVision::first();
+        $about = \App\Models\About::first();
+        $sponsors = \App\Models\Sponsor::where('is_active', true)->orderBy('order')->get();
+        $latest_works = \App\Models\GalleryItem::latest()->take(3)->get();
+        return view('frontend.home', [
+            'sliders'      => $sliders,
+            'mission'      => $mission,
+            'about'        => $about,
+            'sponsors'     => $sponsors,
+            'latest_works' => $latest_works,
+        ]);
     }
 
     public function about() {
-        return view('frontend.about');
+        $about = \App\Models\About::first();
+        return view('frontend.about', compact('about'));
     }
 
     public function missionVision() {
-        return view('frontend.mission-vision');
+        $content = \App\Models\MissionVision::first();
+        return view('frontend.mission-vision', compact('content'));
     }
 
     public function team() {
-        return view('frontend.team');
+        $members = \App\Models\TeamMember::where('is_active', true)->orderBy('order')->get();
+        return view('frontend.team', compact('members'));
     }
 
     public function members() {
-        $members = \App\Models\Member::all();
+        $members = \App\Models\Member::where('status', 'approved')->latest()->get();
         return view('frontend.members', compact('members'));
+    }
+
+    public function events() {
+        $events = \App\Models\Event::where('is_active', true)
+            ->where(function ($query) {
+                $query->whereNull('end_date')
+                    ->orWhere('end_date', '>=', now()->toDateString());
+            })
+            ->latest()
+            ->paginate(9);
+        return view('frontend.events.index', compact('events'));
+    }
+
+    public function eventShow($slug) {
+        $event = \App\Models\Event::where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
+        return view('frontend.events.show', compact('event'));
     }
 
     public function registration() {
@@ -29,8 +61,8 @@ class FrontendController extends Controller {
     }
 
     public function gallery() {
-        $items = \App\Models\GalleryItem::all();
-        $categories = \App\Models\GalleryItem::select('category')->distinct()->pluck('category');
+        $items = \App\Models\GalleryItem::with('category')->get();
+        $categories = \App\Models\Category::all();
         return view('frontend.gallery', compact('items', 'categories'));
     }
 

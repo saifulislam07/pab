@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Photography Association Bangladesh') }}</title>
+    <title>{{ $site_setting->site_title ?? config('app.name', 'Photography Association Bangladesh') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -43,7 +46,11 @@
                         <!-- Logo -->
                         <div class="shrink-0 flex items-center">
                             <a href="{{ route('home') }}">
-                                <img src="{{ asset('images/logo.svg') }}" alt="PAB Logo" class="h-16 w-auto">
+                                @if(isset($site_setting->logo))
+                                    <img src="{{ asset('storage/' . $site_setting->logo) }}" alt="{{ $site_setting->site_name }}" class="h-16 w-auto">
+                                @else
+                                    <img src="{{ asset('images/logo.svg') }}" alt="PAB Logo" class="h-16 w-auto">
+                                @endif
                             </a>
                         </div>
                     </div>
@@ -56,6 +63,7 @@
                             'Mission & Vision' => 'mission-vision',
                             'Team' => 'team',
                             'Members' => 'members',
+                            'Events' => 'events.index',
                             'Registration' => 'registration',
                             'Gallery' => 'gallery',
                             'Contact' => 'contact'
@@ -109,6 +117,15 @@
                             {{ $label }}
                         </a>
                     @endforeach
+
+                    <!-- Mobile Auth Links -->
+                    <div class="pt-4 pb-1 border-t border-gray-800">
+                        @auth
+                            <a href="{{ route('dashboard') }}" class="block pl-3 pr-4 py-2 text-base font-medium text-red-500 hover:text-red-400 hover:bg-gray-800 transition">Dashboard</a>
+                        @else
+                            <a href="{{ route('login') }}" class="block pl-3 pr-4 py-2 text-base font-medium text-gray-400 hover:text-white hover:bg-gray-800 transition">Log in</a>
+                        @endauth
+                    </div>
                 </div>
             </div>
         </nav>
@@ -122,15 +139,35 @@
         <footer class="bg-gray-900 border-t border-gray-800 text-gray-400 py-12">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div class="col-span-1 md:col-span-2">
-                    <img src="{{ asset('images/logo.svg') }}" alt="PAB Logo" class="h-16 w-auto mb-4">
+                    @if(isset($site_setting->logo))
+                        <img src="{{ asset('storage/' . $site_setting->logo) }}" alt="{{ $site_setting->site_name }}" class="h-16 w-auto mb-4">
+                    @else
+                        <img src="{{ asset('images/logo.svg') }}" alt="PAB Logo" class="h-16 w-auto mb-4">
+                    @endif
                     <p class="text-sm leading-relaxed mb-4">
-                        Uniting photographers, inspiring creativity, and capturing the essence of Bangladesh. Join our community to explore the art of visual storytelling.
+                        {{ $site_setting->footer_text ?? 'Uniting photographers, inspiring creativity, and capturing the essence of Bangladesh. Join our community to explore the art of visual storytelling.' }}
                     </p>
                     <div class="flex space-x-4">
-                        <!-- Social Icons Placeholder -->
-                        <a href="#" class="text-gray-400 hover:text-white transition"><span class="sr-only">Facebook</span>FB</a>
-                        <a href="#" class="text-gray-400 hover:text-white transition"><span class="sr-only">Instagram</span>IG</a>
-                        <a href="#" class="text-gray-400 hover:text-white transition"><span class="sr-only">Twitter</span>TW</a>
+                        @if($site_setting->facebook_link) 
+                            <a href="{{ $site_setting->facebook_link }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 text-gray-400 hover:bg-red-600 hover:text-white transition">
+                                <i class="fab fa-facebook-f"></i>
+                            </a> 
+                        @endif
+                        @if($site_setting->instagram_link) 
+                            <a href="{{ $site_setting->instagram_link }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 text-gray-400 hover:bg-red-600 hover:text-white transition">
+                                <i class="fab fa-instagram"></i>
+                            </a> 
+                        @endif
+                        @if($site_setting->twitter_link) 
+                            <a href="{{ $site_setting->twitter_link }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 text-gray-400 hover:bg-red-600 hover:text-white transition">
+                                <i class="fab fa-twitter"></i>
+                            </a> 
+                        @endif
+                        @if($site_setting->linkedin_link) 
+                            <a href="{{ $site_setting->linkedin_link }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 text-gray-400 hover:bg-red-600 hover:text-white transition">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a> 
+                        @endif
                     </div>
                 </div>
                 <div>
@@ -145,14 +182,14 @@
                 <div>
                     <h4 class="text-white font-semibold mb-4">Contact</h4>
                     <ul class="space-y-2 text-sm">
-                        <li>Dhaka, Bangladesh</li>
-                        <li>info@pab.bt</li>
-                        <li>+880 1234 567890</li>
+                        <li>{{ $site_setting->address ?? 'Dhaka, Bangladesh' }}</li>
+                        <li>{{ $site_setting->contact_email ?? 'info@pab.bt' }}</li>
+                        <li>{{ $site_setting->contact_phone ?? '+880 1234 567890' }}</li>
                     </ul>
                 </div>
             </div>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-gray-800 text-center text-xs">
-                &copy; {{ date('Y') }} Photography Association Bangladesh. All rights reserved.
+                &copy; {{ date('Y') }} {{ $site_setting->site_name ?? 'Photography Association Bangladesh' }}. All rights reserved.
             </div>
         </footer>
     </div>

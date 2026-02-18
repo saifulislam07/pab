@@ -2,12 +2,16 @@
 
 @section('content')
     <!-- Hero Slider Section -->
-    <div class="relative w-full h-[600px] md:h-[800px] overflow-hidden" x-data="{ 
+    <div class="relative w-full h-[450px] md:h-[800px] overflow-hidden" x-data="{ 
         activeSlide: 0,
         slides: [
-            { img: 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?q=80&w=2574&auto=format&fit=crop', title: 'Capturing Moments', subtitle: 'The Art of Visual Storytelling' },
-            { img: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2670&auto=format&fit=crop', title: 'Explore Nature', subtitle: 'Beauty of Bangladesh' },
-            { img: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?q=80&w=2670&auto=format&fit=crop', title: 'Urban Life', subtitle: 'Stories from the Streets' }
+            @foreach($sliders as $slider)
+            { 
+                img: '{{ Str::startsWith($slider->image, 'http') ? $slider->image : asset('storage/' . $slider->image) }}', 
+                title: '{{ $slider->title }}', 
+                subtitle: '{{ $slider->subtitle }}' 
+            },
+            @endforeach
         ],
         next() { this.activeSlide = (this.activeSlide === this.slides.length - 1) ? 0 : this.activeSlide + 1 },
         prev() { this.activeSlide = (this.activeSlide === 0) ? this.slides.length - 1 : this.activeSlide - 1 },
@@ -20,14 +24,14 @@
                 <img :src="slide.img" class="w-full h-full object-cover" alt="Slider Image">
                 <div class="absolute inset-0 bg-black/50"></div>
                 <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-                    <h2 class="text-xl md:text-3xl font-light text-gray-200 tracking-widest uppercase mb-4 opacity-0 transform translate-y-10 transition-all duration-1000 delay-300"
+                    <h1 class="text-3xl md:text-7xl font-bold text-white mb-2 md:mb-6 opacity-0 transform -translate-y-8 transition-all duration-1000 delay-300 leading-tight max-w-5xl"
+                        :class="{ 'opacity-100 translate-y-0': activeSlide === index }">
+                        <span x-text="slide.title"></span>
+                    </h1>
+                    <h2 class="text-lg md:text-3xl font-light text-gray-200 tracking-widest uppercase mb-6 md:mb-12 opacity-0 transform translate-y-8 transition-all duration-1000 delay-500 leading-tight"
                         :class="{ 'opacity-100 translate-y-0': activeSlide === index }">
                         <span x-text="slide.subtitle"></span>
                     </h2>
-                    <h1 class="text-4xl md:text-7xl font-bold text-white mb-8 opacity-0 transform scale-90 transition-all duration-1000 delay-500"
-                        :class="{ 'opacity-100 scale-100': activeSlide === index }">
-                        <span x-text="slide.title"></span>
-                    </h1>
                     <a href="{{ route('registration') }}" 
                        class="px-8 py-3 border-2 border-white text-white font-semibold uppercase tracking-wider hover:bg-white hover:text-black transition duration-300 opacity-0 transform translate-y-10 transition-all duration-1000 delay-700"
                        :class="{ 'opacity-100 translate-y-0': activeSlide === index }">
@@ -67,19 +71,19 @@
                      class="transition-all duration-1000 ease-out">
                     <h3 class="text-red-500 font-semibold tracking-wider uppercase">Who We Are</h3>
                     <h2 class="text-3xl md:text-4xl font-bold text-white leading-tight">
-                        Advancing the Art of Photography in Bangladesh
+                        {{ $about->title ?? 'Advancing the Art of Photography in Bangladesh' }}
                     </h2>
                     <p class="text-gray-400 text-lg leading-relaxed">
-                        The Photography Association Bangladesh (PAB) is more than just a club; it's a movement. We bring together passionate photographers from all walks of life to share knowledge, inspire creativity, and showcase the stunning visuals of our nation to the world.
+                        {{ Str::limit($about->description ?? 'The Photography Association Bangladesh (PAB) is more than just a club; it\'s a movement. We bring together passionate photographers from all walks of life to share knowledge, inspire creativity, and showcase the stunning visuals of our nation to the world.', 300) }}
                     </p>
                     <div class="grid grid-cols-2 gap-8 py-4">
                         <div>
-                            <span class="block text-4xl font-bold text-white mb-2">500+</span>
+                            <span class="block text-4xl font-bold text-white mb-2">{{ $about->stats_members ?? '500+' }}</span>
                             <span class="text-sm text-gray-500 uppercase tracking-widest">Active Members</span>
                         </div>
                         <div>
-                            <span class="block text-4xl font-bold text-white mb-2">120+</span>
-                            <span class="text-sm text-gray-500 uppercase tracking-widest">Exhibitions</span>
+                            <span class="block text-4xl font-bold text-white mb-2">{{ $about->stats_workshops ?? '120+' }}</span>
+                            <span class="text-sm text-gray-500 uppercase tracking-widest">Workshops & Events</span>
                         </div>
                     </div>
                     <a href="{{ route('about') }}" class="inline-block text-red-500 border-b border-red-500 pb-1 hover:text-red-400 hover:border-red-400 transition">
@@ -92,9 +96,9 @@
                      :class="{ 'opacity-0 scale-95': !shown, 'opacity-100 scale-100': shown }"
                      class="transition-all duration-1000 ease-out delay-300">
                     <div class="absolute inset-0 bg-red-500 transform translate-x-4 translate-y-4 rounded-lg"></div>
-                    <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=2000&auto=format&fit=crop" 
-                         alt="Photographer at work" 
-                         class="relative rounded-lg shadow-2xl grayscale hover:grayscale-0 transition duration-500">
+                    <img src="{{ isset($about->image_main) ? asset('storage/' . $about->image_main) : 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=2000&auto=format&fit=crop' }}" 
+                         alt="{{ $about->title ?? 'Who We Are' }}" 
+                         class="relative rounded-lg shadow-2xl grayscale hover:grayscale-0 transition duration-500 w-full h-[400px] object-cover">
                 </div>
             </div>
         </div>
@@ -107,21 +111,53 @@
             <div class="w-24 h-1 bg-red-500 mx-auto"></div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-             @foreach(['https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05', 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d', 'https://images.unsplash.com/photo-1433086966358-54859d0ed716'] as $img)
+             @forelse($latest_works as $work)
                 <div class="group relative overflow-hidden h-80"
                      x-data="{ shown: false }" 
                      x-intersect.once="shown = true"
                      :class="{ 'opacity-0 translate-y-10': !shown, 'opacity-100 translate-y-0': shown }"
                      class="transition-all duration-700 ease-out">
-                    <img src="{{ $img }}?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="Gallery Image">
-                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
-                        <span class="text-white text-lg font-medium tracking-wider border border-white px-6 py-2">View Project</span>
+                    <img src="{{ Str::startsWith($work->image, 'http') ? $work->image : asset('storage/' . $work->image) }}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="{{ $work->title }}">
+                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col items-center justify-center p-4">
+                        <h4 class="text-white text-xl font-bold mb-2 transform translate-y-4 group-hover:translate-y-0 transition duration-300">{{ $work->title }}</h4>
+                        <span class="text-xs text-gray-300 uppercase tracking-widest mb-4 transform translate-y-4 group-hover:translate-y-0 transition duration-300 delay-75">{{ $work->category }}</span>
+                        <a href="{{ route('gallery') }}" class="text-white text-sm font-medium tracking-wider border border-white px-6 py-2 hover:bg-white hover:text-black transform translate-y-4 group-hover:translate-y-0 transition duration-300 delay-150">View Gallery</a>
                     </div>
                 </div>
-             @endforeach
+             @empty
+                <div class="col-span-3 text-center text-gray-500 py-12 italic">
+                    No gallery items captured yet. Stay tuned!
+                </div>
+             @endforelse
         </div>
         <div class="text-center mt-12">
              <a href="{{ route('gallery') }}" class="inline-block px-8 py-3 bg-red-600 text-white font-semibold rounded hover:bg-red-700 transition">View Full Gallery</a>
+        </div>
+    </section>
+    <!-- Sponsors Section -->
+    <section class="py-16 bg-gray-900 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-white uppercase tracking-widest">Our Sponsors & Partners</h2>
+                <div class="w-24 h-1 bg-red-600 mx-auto mt-4"></div>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 items-center justify-items-center opacity-80 hover:opacity-100 transition duration-500">
+                @foreach($sponsors as $sponsor)
+                    <a href="{{ $sponsor->link ?? '#' }}" target="_blank" class="grayscale hover:grayscale-0 transition duration-300 transform hover:scale-110">
+                        <img src="{{ \Illuminate\Support\Str::startsWith($sponsor->logo, 'http') ? $sponsor->logo : asset('storage/' . $sponsor->logo) }}" alt="{{ $sponsor->name }}" title="{{ $sponsor->name }}" class="h-16 w-auto object-contain">
+                    </a>
+                @endforeach
+            </div>
+            
+            @if($sponsors->isEmpty())
+                <div class="flex flex-wrap justify-center gap-12 opacity-30 grayscale items-center">
+                    <img src="https://via.placeholder.com/150x50?text=Sponsor+1" alt="Sponsor" class="h-12 w-auto">
+                    <img src="https://via.placeholder.com/150x50?text=Sponsor+2" alt="Sponsor" class="h-12 w-auto">
+                    <img src="https://via.placeholder.com/150x50?text=Sponsor+3" alt="Sponsor" class="h-12 w-auto">
+                    <img src="https://via.placeholder.com/150x50?text=Sponsor+4" alt="Sponsor" class="h-12 w-auto">
+                </div>
+            @endif
         </div>
     </section>
 @endsection

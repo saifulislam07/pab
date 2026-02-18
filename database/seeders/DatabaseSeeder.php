@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,26 +12,37 @@ class DatabaseSeeder extends Seeder {
      * Seed the application's database.
      */
     public function run(): void {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name'  => 'Test User',
-            'email' => 'test@example.com',
+        $this->call([
+            SettingSeeder::class,
+            AboutSeeder::class,
+            MissionVisionSeeder::class,
+            SliderSeeder::class,
+            AdminSeeder::class,
+            RolesAndPermissionsSeeder::class,
+            \Database\Seeders\SponsorEventSeeder::class,
         ]);
 
         // Seed Members
         $roles = ['President', 'Secretary', 'Treasurer', 'Member'];
-        for ($i = 1; $i <= 100; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             \App\Models\Member::create([
-                'name'  => 'Member ' . $i,
-                'role'  => $roles[array_rand($roles)],
-                'image' => 'https://i.pravatar.cc/150?img=' . $i,
-                'bio'   => 'Passionate photographer with a love for capturing moments.',
+                'name'   => 'Member ' . $i,
+                'role'   => $roles[array_rand($roles)],
+                'image'  => 'https://i.pravatar.cc/150?img=' . $i,
+                'bio'    => 'Passionate photographer with a love for capturing moments.',
+                'status' => 'approved',
             ]);
         }
 
+        // Seed Categories first if they don't exist
+        $categoryNames = ['Nature', 'Urban', 'Portrait', 'Event'];
+        $categoryIds = [];
+        foreach ($categoryNames as $name) {
+            $cat = \App\Models\Category::firstOrCreate(['name' => $name], ['slug' => \Illuminate\Support\Str::slug($name)]);
+            $categoryIds[] = $cat->id;
+        }
+
         // Seed Gallery Items
-        $categories = ['Nature', 'Urban', 'Portrait', 'Event'];
         $images = [
             'https://images.unsplash.com/photo-1502472584286-8235545f3335',
             'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9',
@@ -46,9 +56,9 @@ class DatabaseSeeder extends Seeder {
 
         foreach ($images as $img) {
             \App\Models\GalleryItem::create([
-                'title'    => 'Gallery Item',
-                'image'    => $img,
-                'category' => $categories[array_rand($categories)],
+                'title'       => 'Gallery Item',
+                'image'       => $img,
+                'category_id' => $categoryIds[array_rand($categoryIds)],
             ]);
         }
     }

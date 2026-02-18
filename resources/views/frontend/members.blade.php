@@ -11,10 +11,11 @@
         <div x-data="{
                 allMembers: {{ Js::from($members) }},
                 visibleCount: 8,
+                query: '',
                 get filtered() {
                     return this.allMembers.filter(m =>
-                        m.name.toLowerCase().includes($store.search.query.toLowerCase()) ||
-                        m.role.toLowerCase().includes($store.search.query.toLowerCase())
+                        (m.name || '').toLowerCase().includes(this.query.toLowerCase()) ||
+                        (m.role || '').toLowerCase().includes(this.query.toLowerCase())
                     );
                 },
                 get visible() {
@@ -30,14 +31,14 @@
 
             <!-- Filter/Search -->
             <div class="mb-10 flex justify-center">
-                <input type="text" x-model="$store.search.query" placeholder="Search members..." class="bg-gray-800 border-gray-700 text-white rounded-full px-6 py-2 w-full max-w-md focus:ring-red-500 focus:border-red-500 transition">
+                <input type="text" x-model="query" placeholder="Search members..." class="bg-gray-800 border-gray-700 text-white rounded-full px-6 py-2 w-full max-w-md focus:ring-red-500 focus:border-red-500 transition">
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <template x-for="member in visible" :key="member.id">
                     <div class="bg-gray-800 rounded-lg p-6 text-center hover:bg-gray-700 transition animate-fade-in">
                         <div class="w-24 h-24 mx-auto bg-gray-700 rounded-full mb-4 overflow-hidden">
-                            <img :src="member.image" class="w-full h-full object-cover" :alt="member.name">
+                            <img :src="member.image ? (member.image.startsWith('http') ? member.image : '{{ asset('storage') }}/' + member.image) : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(member.name)" class="w-full h-full object-cover" :alt="member.name">
                         </div>
                         <h3 class="text-lg font-semibold text-white" x-text="member.name"></h3>
                         <p class="text-sm text-gray-500" x-text="member.role"></p>

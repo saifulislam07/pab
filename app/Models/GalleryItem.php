@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class GalleryItem extends Model {
     use HasFactory;
 
-    protected $fillable = ['title', 'image', 'category'];
-    //
+    protected $fillable = ['title', 'image', 'category_id'];
+
+    public function category() {
+        return $this->belongsTo(Category::class);
+    }
 }

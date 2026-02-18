@@ -4,8 +4,8 @@
 <div class="bg-gray-900 min-h-screen py-10">
     <!-- Header -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16 animate-fade-in">
-        <h1 class="text-5xl font-bold text-white mb-4">About Us</h1>
-        <p class="text-xl text-gray-400 max-w-2xl mx-auto">Discover the passion, history, and vision behind the Photography Association Bangladesh.</p>
+        <h1 class="text-5xl font-bold text-white mb-4">{{ $about->title ?? 'About Us' }}</h1>
+        <p class="text-xl text-gray-400 max-w-2xl mx-auto">{{ $about->subtitle ?? 'Discover the passion, history, and vision behind the Photography Association Bangladesh.' }}</p>
         <div class="w-24 h-1 bg-red-500 mx-auto mt-6"></div>
     </div>
 
@@ -13,19 +13,29 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
         <!-- Image Grid -->
         <div class="grid grid-cols-2 gap-4 animate-fade-in">
-            <img src="https://images.unsplash.com/photo-1552168324-d612d77725e3?q=80&w=600&auto=format&fit=crop" class="rounded-lg shadow-xl transform translate-y-8">
-            <img src="https://images.unsplash.com/photo-1542038784456-1ea8c9356efb?q=80&w=600&auto=format&fit=crop" class="rounded-lg shadow-xl">
+            <img src="{{ Str::startsWith($about->image_main ?? '', 'http') ? $about->image_main : asset('storage/' . $about->image_main) }}" class="rounded-lg shadow-xl transform translate-y-8">
+            <img src="{{ Str::startsWith($about->image_secondary ?? '', 'http') ? $about->image_secondary : asset('storage/' . $about->image_secondary) }}" class="rounded-lg shadow-xl">
         </div>
 
         <!-- Text Content -->
         <div class="space-y-6 animate-fade-in">
             <h2 class="text-3xl font-bold text-white">Our Story</h2>
             <p class="text-gray-300 leading-relaxed">
-                Founded in 2010, the Photography Association Bangladesh (PAB) started as a small gathering of enthusiasts in Dhaka. Over the years, it has blossomed into a nationwide community dedicated to the art and craft of photography.
+                {{ $about->description }}
             </p>
             <p class="text-gray-300 leading-relaxed">
-                We believe that every picture tells a story. Our mission is to provide a platform for photographers to learn, share, and grow. From workshops and photo walks to grand exhibitions, we curate events that inspire creativity and foster meaningful connections.
+                {{ $about->our_story }}
             </p>
+            
+            @if($about->mission)
+            <div class="mt-4">
+                <h3 class="text-xl font-semibold text-white mb-2">Our Mission</h3>
+                <p class="text-gray-300 leading-relaxed">
+                    {{ $about->mission }}
+                </p>
+            </div>
+            @endif
+
             <div class="pt-4">
                 <a href="{{ route('contact') }}" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded transition">Get in Touch</a>
             </div>
@@ -36,10 +46,10 @@
     <div class="bg-gray-800 mt-20 py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             @foreach([
-                ['count' => '15+', 'label' => 'Years Active'],
-                ['count' => '500+', 'label' => 'Members'],
-                ['count' => '120+', 'label' => 'Workshops'],
-                ['count' => '50+', 'label' => 'Awards Won']
+                ['count' => $about->stats_years ?? '15+', 'label' => 'Years Active'],
+                ['count' => $about->stats_members ?? '500+', 'label' => 'Members'],
+                ['count' => $about->stats_workshops ?? '120+', 'label' => 'Workshops'],
+                ['count' => $about->stats_awards ?? '50+', 'label' => 'Awards Won']
             ] as $stat)
                 <div class="animate-fade-in">
                     <span class="block text-4xl font-bold text-red-500 mb-2">{{ $stat['count'] }}</span>
