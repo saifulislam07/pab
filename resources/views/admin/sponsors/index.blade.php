@@ -5,6 +5,38 @@
 
 @section('content')
 <div class="row">
+    <div class="col-12 mb-4">
+        <div class="card card-outline card-info">
+            <div class="card-header">
+                <h3 class="card-title">Section Caption Settings</h3>
+            </div>
+            <form action="{{ route('admin.sponsors.update-settings') }}" method="POST">
+                @csrf
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="sponsor_title">Section Title</label>
+                                <input type="text" name="sponsor_title" id="sponsor_title" class="form-control" value="{{ old('sponsor_title', $settings->sponsor_title ?? 'Our Partners') }}" placeholder="e.g. Our Partners">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="sponsor_subtitle">Section Subtitle</label>
+                                <input type="text" name="sponsor_subtitle" id="sponsor_subtitle" class="form-control" value="{{ old('sponsor_subtitle', $settings->sponsor_subtitle ?? 'Trusted by Industry Leaders') }}" placeholder="e.g. Trusted by Industry Leaders">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-info">Update Captions</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
     <div class="col-12">
         <div class="card card-outline card-primary">
             <div class="card-header">

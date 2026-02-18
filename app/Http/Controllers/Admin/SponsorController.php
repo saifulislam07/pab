@@ -17,7 +17,25 @@ class SponsorController extends Controller {
             ->paginate(10)
             ->appends(['search' => $search]);
 
-        return view('admin.sponsors.index', compact('sponsors'));
+        $settings = \App\Models\Setting::first();
+
+        return view('admin.sponsors.index', compact('sponsors', 'settings'));
+    }
+
+    public function updateSettings(Request $request) {
+        $data = $request->validate([
+            'sponsor_title'    => 'nullable|string|max:255',
+            'sponsor_subtitle' => 'nullable|string|max:255',
+        ]);
+
+        $setting = \App\Models\Setting::first();
+        if (! $setting) {
+            $setting = \App\Models\Setting::create($data);
+        } else {
+            $setting->update($data);
+        }
+
+        return redirect()->back()->with('success', 'Sponsor section settings updated successfully.');
     }
 
     public function create() {

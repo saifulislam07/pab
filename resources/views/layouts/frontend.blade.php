@@ -14,6 +14,10 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Swiper -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
@@ -167,32 +171,32 @@
         <footer class="bg-gray-900 border-t border-gray-800 text-gray-400 py-12">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div class="col-span-1 md:col-span-2">
-                    @if(isset($site_setting->logo))
-                        <img src="{{ asset('storage/' . $site_setting->logo) }}" alt="{{ $site_setting->site_name }}" class="h-16 w-auto mb-4">
+                    @if(optional($site_setting)->logo)
+                        <img src="{{ asset('storage/' . $site_setting->logo) }}" alt="{{ optional($site_setting)->site_name }}" class="h-16 w-auto">
                     @else
-                        <img src="{{ asset('images/logo.svg') }}" alt="PAB Logo" class="h-16 w-auto mb-4">
+                        <img src="{{ asset('images/logo.svg') }}" alt="PAB Logo" class="h-16 w-auto">
                     @endif
                     <p class="text-sm leading-relaxed mb-4">
-                        {{ $site_setting->footer_text ?? 'Uniting photographers, inspiring creativity, and capturing the essence of Bangladesh. Join our community to explore the art of visual storytelling.' }}
+                        {{ optional($site_setting)->footer_text ?? 'Uniting photographers, inspiring creativity, and capturing the essence of Bangladesh. Join our community to explore the art of visual storytelling.' }}
                     </p>
                     <div class="flex space-x-4">
-                        @if($site_setting->facebook_link) 
-                            <a href="{{ $site_setting->facebook_link }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 text-gray-400 hover:bg-red-600 hover:text-white transition">
+                        @if(optional($site_setting)->facebook_link) 
+                            <a href="{{ optional($site_setting)->facebook_link }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 text-gray-400 hover:bg-red-600 hover:text-white transition">
                                 <i class="fab fa-facebook-f"></i>
                             </a> 
                         @endif
-                        @if($site_setting->instagram_link) 
-                            <a href="{{ $site_setting->instagram_link }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 text-gray-400 hover:bg-red-600 hover:text-white transition">
+                        @if(optional($site_setting)->instagram_link) 
+                            <a href="{{ optional($site_setting)->instagram_link }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 text-gray-400 hover:bg-red-600 hover:text-white transition">
                                 <i class="fab fa-instagram"></i>
                             </a> 
                         @endif
-                        @if($site_setting->twitter_link) 
-                            <a href="{{ $site_setting->twitter_link }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 text-gray-400 hover:bg-red-600 hover:text-white transition">
+                        @if(optional($site_setting)->twitter_link) 
+                            <a href="{{ optional($site_setting)->twitter_link }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 text-gray-400 hover:bg-red-600 hover:text-white transition">
                                 <i class="fab fa-twitter"></i>
                             </a> 
                         @endif
-                        @if($site_setting->linkedin_link) 
-                            <a href="{{ $site_setting->linkedin_link }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 text-gray-400 hover:bg-red-600 hover:text-white transition">
+                        @if(optional($site_setting)->linkedin_link) 
+                            <a href="{{ optional($site_setting)->linkedin_link }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 text-gray-400 hover:bg-red-600 hover:text-white transition">
                                 <i class="fab fa-linkedin-in"></i>
                             </a> 
                         @endif

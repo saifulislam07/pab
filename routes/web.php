@@ -44,6 +44,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/mission-vision', [App\Http\Controllers\Admin\MissionVisionController::class, 'edit'])->name('admin.mission-vision.edit');
     Route::put('/admin/mission-vision', [App\Http\Controllers\Admin\MissionVisionController::class, 'update'])->name('admin.mission-vision.update');
 
+    Route::get('admin/gallery/batch', [App\Http\Controllers\Admin\GalleryController::class, 'batchCreate'])->name('admin.gallery.batch');
+    Route::post('admin/gallery/batch', [App\Http\Controllers\Admin\GalleryController::class, 'batchStore'])->name('admin.gallery.batch.store');
     Route::resource('admin/gallery', App\Http\Controllers\Admin\GalleryController::class)->names('admin.gallery');
     Route::resource('admin/categories', App\Http\Controllers\Admin\CategoryController::class)->names('admin.categories');
 
@@ -55,6 +57,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // Sponsor & Event Routes
     Route::resource('admin/sponsors', App\Http\Controllers\Admin\SponsorController::class)->names('admin.sponsors');
+    Route::post('admin/sponsors/settings', [App\Http\Controllers\Admin\SponsorController::class, 'updateSettings'])->name('admin.sponsors.update-settings');
     Route::resource('admin/events', App\Http\Controllers\Admin\EventController::class)->names('admin.events');
 
     // Advertisements

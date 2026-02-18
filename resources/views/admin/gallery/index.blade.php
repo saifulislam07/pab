@@ -23,6 +23,9 @@
                             @endif
                         </div>
                     </form>
+                    <a href="{{ route('admin.gallery.batch') }}" class="btn btn-info btn-sm mr-2 text-white">
+                        <i class="fas fa-layer-group"></i> Batch Upload
+                    </a>
                     <a href="{{ route('admin.gallery.create') }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i> Add New Item
                     </a>

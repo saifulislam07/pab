@@ -135,29 +135,75 @@
         </div>
     </section>
     <!-- Sponsors Section -->
-    <section class="py-16 bg-gray-900 border-t border-gray-800">
+    <section class="py-24 bg-gray-900 overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-10">
-                <h2 class="text-3xl font-bold text-white uppercase tracking-widest">Our Sponsors & Partners</h2>
-                <div class="w-24 h-1 bg-red-600 mx-auto mt-4"></div>
+            <div class="text-center mb-16" x-data="{ shown: false }" x-intersect.once="shown = true">
+                <h3 class="text-red-500 font-semibold tracking-widest uppercase text-sm mb-3" :class="{ 'animate-fade-in': shown }">{{ optional($site_setting)->sponsor_title ?? 'Our Partners' }}</h3>
+                <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6" :class="{ 'animate-fade-in': shown }">{{ optional($site_setting)->sponsor_subtitle ?? 'Trusted by Industry Leaders' }}</h2>
+                <div class="w-20 h-1.5 bg-red-600 mx-auto rounded-full" :class="{ 'animate-fade-in': shown }"></div>
             </div>
             
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 items-center justify-items-center opacity-80 hover:opacity-100 transition duration-500">
-                @foreach($sponsors as $sponsor)
-                    <a href="{{ $sponsor->link ?? '#' }}" target="_blank" class="grayscale hover:grayscale-0 transition duration-300 transform hover:scale-110">
-                        <img src="{{ \Illuminate\Support\Str::startsWith($sponsor->logo, 'http') ? $sponsor->logo : asset('storage/' . $sponsor->logo) }}" alt="{{ $sponsor->name }}" title="{{ $sponsor->name }}" class="h-16 w-auto object-contain">
-                    </a>
-                @endforeach
-            </div>
-            
-            @if($sponsors->isEmpty())
-                <div class="flex flex-wrap justify-center gap-12 opacity-30 grayscale items-center">
-                    <img src="https://via.placeholder.com/150x50?text=Sponsor+1" alt="Sponsor" class="h-12 w-auto">
-                    <img src="https://via.placeholder.com/150x50?text=Sponsor+2" alt="Sponsor" class="h-12 w-auto">
-                    <img src="https://via.placeholder.com/150x50?text=Sponsor+3" alt="Sponsor" class="h-12 w-auto">
-                    <img src="https://via.placeholder.com/150x50?text=Sponsor+4" alt="Sponsor" class="h-12 w-auto">
+            <div class="swiper sponsor-swiper">
+                <div class="swiper-wrapper">
+                    @forelse($sponsors as $sponsor)
+                        <div class="swiper-slide">
+                            <a href="{{ $sponsor->link ?? '#' }}" target="_blank" class="sponsor-card group">
+                                <img src="{{ \Illuminate\Support\Str::startsWith($sponsor->logo, 'http') ? $sponsor->logo : asset('storage/' . $sponsor->logo) }}" 
+                                     alt="{{ $sponsor->name }}" 
+                                     title="{{ $sponsor->name }}"
+                                     class="max-w-full object-contain">
+                            </a>
+                        </div>
+                    @empty
+                        {{-- Mockup for empty state to maintain visual appeal --}}
+                        @for($i = 1; $i <= 6; $i++)
+                            <div class="swiper-slide">
+                                <div class="sponsor-card opacity-20">
+                                    <span class="text-gray-500 font-bold tracking-widest">PARTNER {{ $i }}</span>
+                                </div>
+                            </div>
+                        @endfor
+                    @endforelse
                 </div>
-            @endif
+                <!-- Pagination -->
+                <div class="swiper-pagination !-bottom-2"></div>
+            </div>
         </div>
     </section>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            new Swiper('.sponsor-swiper', {
+                slidesPerView: 2,
+                spaceBetween: 20,
+                loop: true,
+                autoplay: {
+                    delay: 2500,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                breakpoints: {
+                    640: {
+                        slidesPerView: 3,
+                        spaceBetween: 30,
+                    },
+                    768: {
+                        slidesPerView: 4,
+                        spaceBetween: 40,
+                    },
+                    1024: {
+                        slidesPerView: 5,
+                        spaceBetween: 50,
+                    },
+                },
+                observer: true,
+                observeParents: true,
+            });
+        });
+    </script>
+    @endpush
 @endsection

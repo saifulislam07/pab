@@ -40,9 +40,19 @@ class FrontendController extends Controller {
 
     public function events(\Illuminate\Http\Request $request) {
         $type = $request->query('type', 'current');
+        $search = $request->query('search'); // Get search query
         $today = now()->toDateString();
 
         $query = \App\Models\Event::where('is_active', true);
+
+        // Apply Search Filter
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
 
         if ($type === 'current') {
             $query->where('start_date', '<=', $today)
@@ -59,7 +69,7 @@ class FrontendController extends Controller {
         $bannerAds = \App\Models\Advertisement::active()->where('position', 'banner')->get();
         $sidebarAds = \App\Models\Advertisement::active()->where('position', 'sidebar')->get();
 
-        return view('frontend.events.index', compact('events', 'bannerAds', 'sidebarAds', 'type'));
+        return view('frontend.events.index', compact('events', 'bannerAds', 'sidebarAds', 'type', 'search'));
     }
 
     public function eventShow($slug) {

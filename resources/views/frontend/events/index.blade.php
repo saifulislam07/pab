@@ -48,20 +48,43 @@
 
         {{-- Event Category Tabs --}}
         <div class="flex justify-center mb-10">
-            <div class="inline-flex p-1 bg-gray-800 rounded-lg shadow-inner">
-                <a href="{{ route('events.index', ['type' => 'current']) }}" 
-                   class="px-6 py-2 rounded-md transition duration-300 {{ $type === 'current' ? 'bg-red-600 text-white shadow-lg' : 'text-gray-400 hover:text-white' }}">
-                    Current
-                </a>
-                <a href="{{ route('events.index', ['type' => 'upcoming']) }}" 
-                   class="px-6 py-2 rounded-md transition duration-300 {{ $type === 'upcoming' ? 'bg-red-600 text-white shadow-lg' : 'text-gray-400 hover:text-white' }}">
-                    Upcoming
-                </a>
-                <a href="{{ route('events.index', ['type' => 'past']) }}" 
-                   class="px-6 py-2 rounded-md transition duration-300 {{ $type === 'past' ? 'bg-red-600 text-white shadow-lg' : 'text-gray-400 hover:text-white' }}">
-                    Past
-                </a>
+            <div class="max-w-full overflow-x-auto pb-2">
+                <div class="inline-flex p-1 bg-gray-800 rounded-lg shadow-inner whitespace-nowrap">
+                    <a href="{{ route('events.index', ['type' => 'current', 'search' => $search]) }}" 
+                       class="px-6 py-2 rounded-md transition duration-300 {{ $type === 'current' ? 'bg-red-600 text-white shadow-lg' : 'text-gray-400 hover:text-white' }}">
+                        Current
+                    </a>
+                    <a href="{{ route('events.index', ['type' => 'upcoming', 'search' => $search]) }}" 
+                       class="px-6 py-2 rounded-md transition duration-300 {{ $type === 'upcoming' ? 'bg-red-600 text-white shadow-lg' : 'text-gray-400 hover:text-white' }}">
+                        Upcoming
+                    </a>
+                    <a href="{{ route('events.index', ['type' => 'past', 'search' => $search]) }}" 
+                       class="px-6 py-2 rounded-md transition duration-300 {{ $type === 'past' ? 'bg-red-600 text-white shadow-lg' : 'text-gray-400 hover:text-white' }}">
+                        Past
+                    </a>
+                </div>
             </div>
+        </div>
+
+        {{-- Search Bar --}}
+        <div class="max-w-2xl mx-auto mb-10">
+            <form action="{{ route('events.index') }}" method="GET" class="relative">
+                <input type="hidden" name="type" value="{{ $type }}">
+                <div class="relative">
+                    <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Search events by title, description, or location..." 
+                        class="w-full bg-gray-800 border border-gray-700 text-white rounded-full py-3 px-6 pl-12 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent placeholder-gray-500 transition-all duration-300 shadow-md hover:shadow-lg">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <button type="submit" class="absolute inset-y-0 right-0 pr-1 flex items-center">
+                        <span class="bg-red-600 hover:bg-red-700 text-white rounded-full p-2 m-1 transition duration-300 shadow-sm">
+                           Search
+                        </span>
+                    </button>
+                </div>
+            </form>
         </div>
 
         <div class="flex flex-col lg:flex-row gap-8">

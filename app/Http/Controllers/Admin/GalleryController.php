@@ -26,6 +26,32 @@ class GalleryController extends Controller {
         return view('admin.gallery.create', compact('categories'));
     }
 
+    public function batchCreate() {
+        $categories = \App\Models\Category::all();
+        return view('admin.gallery.batch', compact('categories'));
+    }
+
+    public function batchStore(Request $request) {
+        $request->validate([
+            'category_id' => 'required|exists:categories,id',
+            'images'      => 'required|array',
+            'images.*'    => 'image|max:5120', // Max 5MB per image
+        ]);
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $path = $file->store('gallery', 'public');
+                GalleryItem::create([
+                    'category_id' => $request->category_id,
+                    'image'       => $path,
+                    'title'       => null, // Batch uploads usually don't have individual titles initially
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.gallery.index')->with('success', 'Batch images uploaded successfully.');
+    }
+
     public function store(Request $request) {
         $data = $request->validate([
             'title'       => 'nullable|string|max:255',
