@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Member extends Model {
     use HasFactory;
-    protected $fillable = ['name', 'role', 'image', 'bio', 'facebook', 'twitter', 'linkedin', 'status'];
+    protected $fillable = ['name', 'mobile', 'email', 'role', 'image', 'bio', 'facebook', 'twitter', 'linkedin', 'status'];
 
     //
 }

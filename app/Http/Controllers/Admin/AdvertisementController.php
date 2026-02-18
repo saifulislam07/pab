@@ -37,9 +37,17 @@ class AdvertisementController extends Controller {
 
         $data['image'] = $request->file('image')->store('advertisements', 'public');
 
-        Advertisement::create($data);
+        $advertisement = Advertisement::create($data);
 
-        return redirect()->route('admin.advertisements.index')->with('success', 'Advertisement created successfully.');
+        // Record Earning
+        \App\Models\Earning::create([
+            'advertisement_id' => $advertisement->id,
+            'title'            => 'Ad Revenue: ' . $advertisement->title,
+            'amount'           => $advertisement->price,
+            'date'             => $advertisement->start_date,
+        ]);
+
+        return redirect()->route('admin.advertisements.index')->with('success', 'Advertisement created successfully and earning recorded.');
     }
 
     public function edit(Advertisement $advertisement) {
@@ -64,6 +72,16 @@ class AdvertisementController extends Controller {
         }
 
         $advertisement->update($data);
+
+        // Update Earning if it exists
+        $earning = \App\Models\Earning::where('advertisement_id', $advertisement->id)->first();
+        if ($earning) {
+            $earning->update([
+                'title'  => 'Ad Revenue: ' . $advertisement->title,
+                'amount' => $advertisement->price,
+                'date'   => $advertisement->start_date,
+            ]);
+        }
 
         return redirect()->route('admin.advertisements.index')->with('success', 'Advertisement updated successfully.');
     }

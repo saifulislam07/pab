@@ -24,6 +24,11 @@
                             @endif
                         </div>
                     </form>
+                    <div class="btn-group mr-2">
+                        <a href="{{ route('admin.members.export', ['status' => $status, 'search' => request('search')]) }}" class="btn btn-sm btn-success">
+                            <i class="fas fa-file-csv mr-1"></i> Export {{ ucfirst($status) }} CSV
+                        </a>
+                    </div>
                     <div class="btn-group">
                         <a href="{{ route('admin.members.index', ['status' => 'pending', 'search' => request('search')]) }}" class="btn btn-sm {{ $status == 'pending' ? 'btn-primary' : 'btn-default' }}">Pending</a>
                         <a href="{{ route('admin.members.index', ['status' => 'approved', 'search' => request('search')]) }}" class="btn btn-sm {{ $status == 'approved' ? 'btn-primary' : 'btn-default' }}">Approved</a>

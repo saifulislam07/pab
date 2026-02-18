@@ -17,7 +17,15 @@ Route::controller(FrontendController::class)->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        $stats = [
+            'total_members'   => \App\Models\Member::where('status', 'approved')->count(),
+            'pending_members' => \App\Models\Member::where('status', 'pending')->count(),
+            'total_events'    => \App\Models\Event::count(),
+            'total_gallery'   => \App\Models\GalleryItem::count(),
+            'total_sponsors'  => \App\Models\Sponsor::count(),
+            'total_earnings'  => \App\Models\Earning::sum('amount'),
+        ];
+        return view('dashboard', compact('stats'));
     })->name('dashboard');
 
     Route::get('/member/dashboard', [App\Http\Controllers\Member\DashboardController::class, 'index'])->name('member.dashboard');
@@ -51,6 +59,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // New routes for Team and Members
     Route::resource('admin/team', App\Http\Controllers\Admin\TeamMemberController::class)->names('admin.team');
+    Route::get('admin/members/export', [App\Http\Controllers\Admin\MemberController::class, 'exportCsv'])->name('admin.members.export');
     Route::get('admin/members', [App\Http\Controllers\Admin\MemberController::class, 'index'])->name('admin.members.index');
     Route::patch('admin/members/{member}/status', [App\Http\Controllers\Admin\MemberController::class, 'updateStatus'])->name('admin.members.update-status');
     Route::delete('admin/members/{member}', [App\Http\Controllers\Admin\MemberController::class, 'destroy'])->name('admin.members.destroy');
