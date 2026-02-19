@@ -181,7 +181,7 @@
                         <img src="{{ asset('images/logo.svg') }}" alt="PAB Logo" class="h-16 w-auto">
                     @endif
                     <p class="text-sm leading-relaxed mb-4">
-                        {{ optional($site_setting)->footer_text ?? 'Uniting photographers, inspiring creativity, and capturing the essence of Bangladesh. Join our community to explore the art of visual storytelling.' }}
+                        {{ optional($site_setting)->footer_text ?: 'Uniting photographers, inspiring creativity, and capturing the essence of Bangladesh. Join our community to explore the art of visual storytelling.' }}
                     </p>
                     <div class="flex space-x-4">
                         @if(optional($site_setting)->facebook_link) 
@@ -225,7 +225,7 @@
                 </div>
             </div>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-gray-800 text-center text-xs">
-                &copy; {{ date('Y') }} {{ $site_setting->site_name ?? 'Photography Association Bangladesh' }}. All rights reserved.
+                {!! optional($site_setting)->footer_copyright ?: '&copy; ' . date('Y') . ' ' . (optional($site_setting)->site_name ?: 'Photography Association Bangladesh') . '. All rights reserved.' !!}
             </div>
         </footer>
     </div>

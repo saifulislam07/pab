@@ -16,25 +16,23 @@ class AppServiceProvider extends ServiceProvider {
      * Bootstrap any application services.
      */
     public function boot(): void {
-        \Illuminate\Support\Facades\View::composer('*', function ($view) {
-            $view->with('site_setting', \App\Models\Setting::first());
-        });
-
-        // Dynamic Mail Config
         try {
             if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
-                $mailSetting = \App\Models\Setting::first();
-                if ($mailSetting) {
+                $site_setting = \App\Models\Setting::first();
+                \Illuminate\Support\Facades\View::share('site_setting', $site_setting);
+
+                // Dynamic Mail Config
+                if ($site_setting) {
                     $config = [
-                        'transport'  => $mailSetting->mail_mailer ?? 'smtp',
-                        'host'       => $mailSetting->mail_host,
-                        'port'       => $mailSetting->mail_port,
-                        'encryption' => $mailSetting->mail_encryption,
-                        'username'   => $mailSetting->mail_username,
-                        'password'   => $mailSetting->mail_password,
+                        'transport'  => $site_setting->mail_mailer ?? 'smtp',
+                        'host'       => $site_setting->mail_host,
+                        'port'       => $site_setting->mail_port,
+                        'encryption' => $site_setting->mail_encryption,
+                        'username'   => $site_setting->mail_username,
+                        'password'   => $site_setting->mail_password,
                         'from'       => [
-                            'address' => $mailSetting->mail_from_address,
-                            'name'    => $mailSetting->mail_from_name,
+                            'address' => $site_setting->mail_from_address,
+                            'name'    => $site_setting->mail_from_name,
                         ],
                     ];
                     config(['mail.mailers.smtp' => array_merge(config('mail.mailers.smtp'), $config)]);
@@ -42,7 +40,7 @@ class AppServiceProvider extends ServiceProvider {
                 }
             }
         } catch (\Exception $e) {
-            // Silence error if table doesn't exist yet during migration/setup
+            // Silence error
         }
 
         \Illuminate\Pagination\Paginator::useBootstrapFour();

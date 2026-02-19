@@ -62,6 +62,10 @@ class ProfileController extends Controller {
 
         $member->update($data);
 
+        if ($member->fresh()->getCompletionPercentage() < 100) {
+            return redirect()->route('member.profile.edit')->with('success', 'Profile updated. Please complete the remaining fields to reach 100%.');
+        }
+
         return redirect()->route('member.dashboard')->with('success', 'Profile completed successfully.');
     }
 }

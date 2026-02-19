@@ -16,11 +16,14 @@ class CheckProfileCompletion {
         if (auth()->check() && auth()->user()->isMember()) {
             $member = auth()->user()->member;
 
-            // If the user doesn't have a member record yet, or it's incomplete
-            if (! $member || empty($member->mobile)) {
-                // Allow access only to the profile edit and update routes
-                if (! $request->routeIs('member.profile.edit') && ! $request->routeIs('member.profile.update') && ! $request->routeIs('logout')) {
-                    return redirect()->route('member.profile.edit')->with('info', 'Please complete your profile to access the dashboard.');
+            // Ensure profile is 100% complete
+            if (! $member || $member->getCompletionPercentage() < 100) {
+                // Allow access only to the profile edit, update, logout, and district API routes
+                if (! $request->routeIs('member.profile.edit') &&
+                    ! $request->routeIs('member.profile.update') &&
+                    ! $request->routeIs('logout') &&
+                    ! $request->routeIs('api.districts')) {
+                    return redirect()->route('member.profile.edit')->with('info', 'Please complete your profile to 100% to access the dashboard.');
                 }
             }
         }

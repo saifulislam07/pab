@@ -45,6 +45,7 @@ class MenuSeeder extends Seeder {
             ['title' => 'Roles Management', 'url' => 'admin/roles', 'icon' => 'fas fa-user-tag', 'position' => 13, 'type' => 'admin'],
             ['title' => 'Permissions', 'url' => 'admin/permissions', 'icon' => 'fas fa-key', 'position' => 14, 'type' => 'admin'],
             ['title' => 'Site Settings', 'url' => 'admin/settings', 'icon' => 'fas fa-cog', 'position' => 15, 'type' => 'admin'],
+            ['title' => 'SMTP Settings', 'url' => 'admin.settings.smtp', 'icon' => 'fas fa-envelope', 'position' => 16, 'type' => 'admin'],
         ];
 
         foreach ($adminMenus as $menu) {

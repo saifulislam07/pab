@@ -66,6 +66,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/settings', [App\Http\Controllers\Admin\SettingController::class, 'edit'])->name('admin.settings.edit');
     Route::put('/admin/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('admin.settings.update');
 
+    Route::get('/admin/settings/smtp', [App\Http\Controllers\Admin\SettingController::class, 'smtp'])->name('admin.settings.smtp');
+    Route::put('/admin/settings/smtp', [App\Http\Controllers\Admin\SettingController::class, 'smtpUpdate'])->name('admin.settings.smtp.update');
+
     Route::get('/admin/sliders', [App\Http\Controllers\Admin\SliderController::class, 'index'])->name('admin.sliders.index');
     Route::get('/admin/sliders/create', [App\Http\Controllers\Admin\SliderController::class, 'create'])->name('admin.sliders.create');
     Route::post('/admin/sliders', [App\Http\Controllers\Admin\SliderController::class, 'store'])->name('admin.sliders.store');

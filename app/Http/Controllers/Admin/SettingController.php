@@ -13,6 +13,11 @@ class SettingController extends Controller {
         return view('admin.settings.edit', compact('setting'));
     }
 
+    public function smtp() {
+        $setting = Setting::first();
+        return view('admin.settings.smtp', compact('setting'));
+    }
+
     public function update(Request $request) {
         $setting = Setting::first();
 
@@ -20,6 +25,7 @@ class SettingController extends Controller {
             'site_name'            => 'required|string|max:255',
             'site_title'           => 'required|string|max:255',
             'footer_text'          => 'nullable|string',
+            'footer_copyright'     => 'nullable|string',
             'contact_email'        => 'nullable|email',
             'contact_phone'        => 'nullable|string',
             'address'              => 'nullable|string',
@@ -39,14 +45,6 @@ class SettingController extends Controller {
             'register_feature_1'   => 'nullable|string|max:255',
             'register_feature_2'   => 'nullable|string|max:255',
             'register_feature_3'   => 'nullable|string|max:255',
-            'mail_mailer'          => 'required|string|max:20',
-            'mail_host'            => 'nullable|string|max:255',
-            'mail_port'            => 'nullable|string|max:10',
-            'mail_username'        => 'nullable|string|max:255',
-            'mail_password'        => 'nullable|string|max:255',
-            'mail_encryption'      => 'nullable|string|max:20',
-            'mail_from_address'    => 'nullable|email|max:255',
-            'mail_from_name'       => 'nullable|string|max:255',
         ]);
 
         if ($request->hasFile('logo')) {
@@ -66,5 +64,24 @@ class SettingController extends Controller {
         $setting->update($data);
 
         return redirect()->back()->with('success', 'Site settings updated successfully.');
+    }
+
+    public function smtpUpdate(Request $request) {
+        $setting = Setting::first();
+
+        $data = $request->validate([
+            'mail_mailer'       => 'required|string|max:20',
+            'mail_host'         => 'nullable|string|max:255',
+            'mail_port'         => 'nullable|string|max:10',
+            'mail_username'     => 'nullable|string|max:255',
+            'mail_password'     => 'nullable|string|max:255',
+            'mail_encryption'   => 'nullable|string|max:20',
+            'mail_from_address' => 'nullable|email|max:255',
+            'mail_from_name'    => 'nullable|string|max:255',
+        ]);
+
+        $setting->update($data);
+
+        return redirect()->back()->with('success', 'SMTP settings updated successfully.');
     }
 }

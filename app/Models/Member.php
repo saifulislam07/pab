@@ -43,4 +43,23 @@ class Member extends Model {
 
         return $prefix . str_pad($nextSeq, 3, '0', STR_PAD_LEFT);
     }
+
+    public function getCompletionPercentage(): int {
+        $fields = [
+            'name', 'mobile', 'email', 'title', 'profession', 'image', 'bio',
+            'division', 'district', 'upazila', 'current_location',
+            'specialization', 'experience_level', 'camera_gear',
+        ];
+
+        $totalFields = count($fields);
+        $completedFields = 0;
+
+        foreach ($fields as $field) {
+            if (! empty($this->{$field})) {
+                $completedFields++;
+            }
+        }
+
+        return round(($completedFields / $totalFields) * 100);
+    }
 }

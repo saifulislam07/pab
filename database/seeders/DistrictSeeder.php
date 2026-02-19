@@ -20,7 +20,7 @@ class DistrictSeeder extends Seeder {
 
         foreach ($data as $division => $districts) {
             foreach ($districts as $district) {
-                District::firstOrCreate([
+                District::updateOrCreate([
                     'division' => $division,
                     'name'     => $district,
                 ]);
