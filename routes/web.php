@@ -29,6 +29,11 @@ Route::middleware(['auth', 'verified', 'profile.complete'])->group(function () {
     Route::get('/member/profile/complete', [App\Http\Controllers\Member\ProfileController::class, 'edit'])->name('member.profile.edit');
     Route::put('/member/profile/complete', [App\Http\Controllers\Member\ProfileController::class, 'update'])->name('member.profile.update');
 
+    // Membership Management for Members
+    Route::get('/member/membership', [App\Http\Controllers\Member\MembershipController::class, 'index'])->name('member.membership.index');
+    Route::get('/member/membership/apply', [App\Http\Controllers\Member\MembershipController::class, 'apply'])->name('member.membership.apply');
+    Route::post('/member/membership/apply', [App\Http\Controllers\Member\MembershipController::class, 'store'])->name('member.membership.store');
+
     // District API for cascading dropdown
     Route::get('/api/districts/{division}', function ($division) {
         return \App\Models\District::where('division', $division)->orderBy('name')->pluck('name');
@@ -88,7 +93,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('admin/team', App\Http\Controllers\Admin\TeamMemberController::class)->names('admin.team');
     Route::get('admin/members/export', [App\Http\Controllers\Admin\MemberController::class, 'exportCsv'])->name('admin.members.export');
     Route::get('admin/members', [App\Http\Controllers\Admin\MemberController::class, 'index'])->name('admin.members.index');
+    Route::get('admin/members/{member}', [App\Http\Controllers\Admin\MemberController::class, 'show'])->name('admin.members.show');
     Route::patch('admin/members/{member}/status', [App\Http\Controllers\Admin\MemberController::class, 'updateStatus'])->name('admin.members.update-status');
+    Route::put('admin/members/{member}/password', [App\Http\Controllers\Admin\MemberController::class, 'updatePassword'])->name('admin.members.update-password');
     Route::delete('admin/members/{member}', [App\Http\Controllers\Admin\MemberController::class, 'destroy'])->name('admin.members.destroy');
 
     // Sponsor & Event Routes
@@ -107,6 +114,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('admin/users', App\Http\Controllers\Admin\UserController::class)->names('admin.users')->only(['index', 'update', 'destroy']);
     Route::resource('admin/roles', App\Http\Controllers\Admin\RoleController::class)->names('admin.roles');
     Route::resource('admin/permissions', App\Http\Controllers\Admin\PermissionController::class)->names('admin.permissions')->only(['index', 'store', 'destroy']);
+
+    // Membership Management for Admins
+    Route::get('admin/membership', [App\Http\Controllers\Admin\MembershipController::class, 'index'])->name('admin.membership.index');
+    Route::post('admin/membership/{member}/approve', [App\Http\Controllers\Admin\MembershipController::class, 'approve'])->name('admin.membership.approve');
+    Route::post('admin/membership/{member}/reject', [App\Http\Controllers\Admin\MembershipController::class, 'reject'])->name('admin.membership.reject');
 });
 
 // Frontend Event Routes

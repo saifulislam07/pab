@@ -12,6 +12,18 @@ class Member extends Model {
         'division', 'district', 'upazila', 'current_location',
         'specialization', 'experience_level', 'camera_gear',
         'facebook', 'instagram', 'linkedin', 'website', 'status', 'permission',
+        'membership_type', 'membership_status',
+        'membership_amount',
+        'payment_method',
+        'transaction_id', 'payment_proof',
+        'membership_started_at', 'membership_expires_at',
+    ];
+
+    protected $casts = [
+        'membership_started_at' => 'datetime',
+        'membership_expires_at' => 'datetime',
+        'membership_amount'     => 'float', // Assuming membership_amount is a numeric value
+        'permission'            => 'boolean',
     ];
 
     public function user() {
@@ -61,5 +73,18 @@ class Member extends Model {
         }
 
         return round(($completedFields / $totalFields) * 100);
+    }
+
+    public function isActiveMember(): bool {
+        return $this->membership_status === 'active' &&
+        $this->membership_expires_at &&
+        $this->membership_expires_at->isFuture();
+    }
+
+    public function getMembershipRemainingDays(): int {
+        if (! $this->membership_expires_at || $this->membership_expires_at->isPast()) {
+            return 0;
+        }
+        return now()->diffInDays($this->membership_expires_at);
     }
 }

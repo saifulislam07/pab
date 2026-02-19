@@ -66,14 +66,30 @@ class MemberController extends Controller {
         return response()->stream($callback, 200, $headers);
     }
 
+    public function show(Member $member) {
+        return view('admin.members.show', compact('member'));
+    }
+
     public function updateStatus(Request $request, Member $member) {
         $request->validate([
-            'status' => 'required|in:approved,rejected,pending',
+            'status' => 'required|in:approved,rejected,pending,blocked',
         ]);
 
         $member->update(['status' => $request->status]);
 
         return redirect()->back()->with('success', 'Member status updated to ' . $request->status);
+    }
+
+    public function updatePassword(Request $request, Member $member) {
+        $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $member->user->update([
+            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+        ]);
+
+        return redirect()->back()->with('success', 'Member password updated successfully.');
     }
 
     public function destroy(Member $member) {

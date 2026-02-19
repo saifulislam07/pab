@@ -3,13 +3,58 @@
 @section('title', 'Member Dashboard')
 @section('page_title', 'Member Dashboard')
 
+@section('styles')
+<style>
+    .animate-pulse-slow {
+        animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse-slow {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.8; }
+    }
+    .badge-icon-wrap {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 8px;
+        vertical-align: middle;
+    }
+    .badge-icon-wrap .fa-check {
+        position: absolute;
+        color: #fff;
+    }
+    .badge-lifetime {
+        color: #1e3a8a;
+        filter: drop-shadow(0 0 4px rgba(30, 58, 138, 0.6));
+    }
+    .badge-yearly {
+        color: #60a5fa;
+        filter: drop-shadow(0 0 4px rgba(96, 165, 250, 0.6));
+    }
+    .badge-icon-sm .fa-certificate { font-size: 1.1rem; }
+    .badge-icon-sm .fa-check { font-size: 0.5rem; }
+    .badge-icon-xs .fa-certificate { font-size: 0.85rem; }
+    .badge-icon-xs .fa-check { font-size: 0.35rem; }
+</style>
+@endsection
+
 @section('content')
 <div class="row">
     <!-- Welcome Card -->
     <div class="col-md-8 pb-2">
         <div class="card card-outline card-primary h-100">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-hand-wave mr-1 text-primary"></i> Welcome, {{ auth()->user()->name }}!</h3>
+                <h3 class="card-title">
+                    <i class="fas fa-hand-wave mr-1 text-primary"></i> 
+                    Welcome, {{ auth()->user()->name }}!
+                    @if($member->isActiveMember())
+                        <span class="badge-icon-wrap badge-icon-sm">
+                            <i class="fas fa-certificate animate-pulse-slow {{ $member->membership_type === 'lifetime' ? 'badge-lifetime' : 'badge-yearly' }}"></i>
+                            <i class="fas fa-check"></i>
+                        </span>
+                    @endif
+                </h3>
             </div>
             <div class="card-body">
                 <p class="lead">Welcome to your PAB Member Dashboard.</p>
@@ -21,6 +66,32 @@
                         Your membership status is currently <strong>Pending</strong>. Some features may be restricted until approved by an administrator.
                     </div>
                 @endif
+
+                <!-- Membership Plan Status Card -->
+                <div class="mt-4 p-3 rounded" style="background: #f8f9fa; border-left: 5px solid {{ $member->isActiveMember() ? '#28a745' : '#ffc107' }};">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <i class="fas fa-id-badge fa-3x {{ $member->isActiveMember() ? 'text-success' : 'text-warning' }}"></i>
+                        </div>
+                        <div class="col">
+                            <h5 class="font-weight-bold mb-1">
+                                Membership: 
+                                <span class="text-uppercase">{{ $member->membership_type != 'none' ? $member->membership_type : 'Not Applied' }}</span>
+                            </h5>
+                            @if($member->isActiveMember())
+                                <p class="mb-0 text-muted small">
+                                    Valid until <strong>{{ $member->membership_expires_at->format('M d, Y') }}</strong> 
+                                    ({{ $member->getMembershipRemainingDays() }} days left)
+                                </p>
+                            @elseif($member->membership_status === 'pending')
+                                <p class="mb-0 text-muted small">Application under review. ID: {{ $member->transaction_id }}</p>
+                            @else
+                                <p class="mb-0 text-muted small">You haven't activated a membership plan yet.</p>
+                                <a href="{{ route('member.membership.apply') }}" class="btn btn-xs btn-outline-primary mt-1">Activate Now</a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
 
                 <div class="mt-4">
                     <a href="{{ route('member.profile.edit') }}" class="btn btn-primary mr-2">
@@ -64,7 +135,15 @@
                                 </div>
                             </div>
                             <div class="col-8 pl-3">
-                                <h6 class="text-white mb-0 text-truncate font-weight-bold" style="font-size: 0.95rem;">{{ auth()->user()->name }}</h6>
+                                <h6 class="text-white mb-0 text-truncate font-weight-bold" style="font-size: 0.95rem;">
+                                    {{ auth()->user()->name }}
+                                    @if($member->isActiveMember())
+                                        <span class="badge-icon-wrap badge-icon-xs" style="margin-left: 4px;">
+                                            <i class="fas fa-certificate animate-pulse-slow {{ $member->membership_type === 'lifetime' ? 'badge-lifetime' : 'badge-yearly' }}"></i>
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                                    @endif
+                                </h6>
                                 <p class="text-danger mb-2" style="font-size: 0.7rem; line-height: 1.2;">{{ $member->title ?? 'Professional Photographer' }}</p>
                                 
                                 <div class="mt-2">

@@ -27,7 +27,15 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <!-- Left Column: Personal Info -->
                     <div class="lg:col-span-2">
-                        <h1 class="text-4xl font-bold text-white mb-2">{{ $member->name }}</h1>
+                        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2 flex items-center flex-wrap">
+                            {{ $member->name }}
+                            @if($member->isActiveMember())
+                                <span class="relative inline-flex items-center justify-center ml-2 sm:ml-3">
+                                    <i class="fas fa-certificate {{ $member->membership_type === 'lifetime' ? 'text-blue-900 glow-lifetime' : 'text-blue-400 glow-yearly' }} text-xl sm:text-2xl animate-pulse-slow"></i>
+                                    <i class="fas fa-check text-white absolute text-[8px] sm:text-[10px]"></i>
+                                </span>
+                            @endif
+                        </h1>
                         <p class="text-xl text-red-500 font-medium mb-4">{{ $member->title }} {{ $member->profession ? '• ' . $member->profession : '' }}</p>
                         
                         @if($member->bio)

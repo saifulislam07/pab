@@ -3,6 +3,44 @@
 @section('title', 'Member Moderation')
 @section('page_title', 'Member Moderation')
 
+@section('styles')
+<style>
+    .animate-pulse-slow {
+        animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse-slow {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.8; }
+    }
+    .badge-icon-wrap {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 6px;
+        width: 18px;
+        height: 18px;
+        vertical-align: middle;
+    }
+    .badge-icon-wrap .fa-certificate {
+        font-size: 1.1rem;
+    }
+    .badge-icon-wrap .fa-check {
+        position: absolute;
+        font-size: 0.5rem;
+        color: #fff;
+    }
+    .badge-lifetime {
+        color: #1e3a8a;
+        filter: drop-shadow(0 0 4px rgba(30, 58, 138, 0.6));
+    }
+    .badge-yearly {
+        color: #60a5fa;
+        filter: drop-shadow(0 0 4px rgba(96, 165, 250, 0.6));
+    }
+</style>
+@endsection
+
 @section('content')
 <div class="row">
     <div class="col-12">
@@ -25,6 +63,7 @@
                         <a href="{{ route('admin.members.index', ['status' => 'pending', 'search' => request('search')]) }}" class="btn btn-sm {{ $status == 'pending' ? 'btn-primary' : 'btn-default' }}">Pending</a>
                         <a href="{{ route('admin.members.index', ['status' => 'approved', 'search' => request('search')]) }}" class="btn btn-sm {{ $status == 'approved' ? 'btn-primary' : 'btn-default' }}">Approved</a>
                         <a href="{{ route('admin.members.index', ['status' => 'rejected', 'search' => request('search')]) }}" class="btn btn-sm {{ $status == 'rejected' ? 'btn-primary' : 'btn-default' }}">Rejected</a>
+                        <a href="{{ route('admin.members.index', ['status' => 'blocked', 'search' => request('search')]) }}" class="btn btn-sm {{ $status == 'blocked' ? 'btn-primary' : 'btn-default' }}">Blocked</a>
                     </div>
                 </div>
             </div>
@@ -45,11 +84,23 @@
                             <td>
                                 <img src="{{ $member->image ? asset('storage/' . $member->image) : 'https://ui-avatars.com/api/?name=' . urlencode($member->name) }}" width="45" height="45" class="img-circle elevation-2">
                             </td>
-                            <td class="align-middle font-weight-bold">{{ $member->name }}</td>
+                            <td class="align-middle font-weight-bold">
+                                {{ $member->name }}
+                                @if($member->isActiveMember())
+                                    <span class="badge-icon-wrap">
+                                        <i class="fas fa-certificate animate-pulse-slow {{ $member->membership_type === 'lifetime' ? 'badge-lifetime' : 'badge-yearly' }}"></i>
+                                        <i class="fas fa-check"></i>
+                                    </span>
+                                @endif
+                            </td>
                             <td class="align-middle text-muted">{{ $member->role }}</td>
                             <td class="align-middle">{{ $member->created_at->format('M d, Y') }}</td>
                             <td class="text-right align-middle">
-                                @if($status != 'approved')
+                                <a href="{{ route('admin.members.show', $member->id) }}" class="btn btn-sm btn-info" title="View Profile">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+
+                                @if($status == 'pending' || $status == 'rejected')
                                 <form action="{{ route('admin.members.update-status', $member->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('PATCH')
@@ -60,7 +111,29 @@
                                 </form>
                                 @endif
 
-                                @if($status != 'rejected')
+                                @if($status == 'approved')
+                                <form action="{{ route('admin.members.update-status', $member->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="status" value="blocked">
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Block" onclick="return confirm('Are you sure you want to block this member?')">
+                                        <i class="fas fa-ban"></i>
+                                    </button>
+                                </form>
+                                @endif
+
+                                @if($status == 'blocked')
+                                <form action="{{ route('admin.members.update-status', $member->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="status" value="approved">
+                                    <button type="submit" class="btn btn-sm btn-success" title="Unblock">
+                                        <i class="fas fa-unlock"></i>
+                                    </button>
+                                </form>
+                                @endif
+
+                                @if($status == 'pending' || $status == 'approved')
                                 <form action="{{ route('admin.members.update-status', $member->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('PATCH')
@@ -74,7 +147,7 @@
                                 <form action="{{ route('admin.members.destroy', $member->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                    <button type="submit" class="btn btn-sm btn-dark" title="Delete">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>

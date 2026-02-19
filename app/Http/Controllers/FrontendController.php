@@ -34,12 +34,15 @@ class FrontendController extends Controller {
     }
 
     public function members() {
-        $members = \App\Models\Member::where('status', 'approved')->latest()->get();
+        $members = \App\Models\Member::where('status', 'approved')
+            ->latest()
+            ->get();
         return view('frontend.members', compact('members'));
     }
 
     public function memberShow($id) {
-        $member = \App\Models\Member::where('status', 'approved')->findOrFail($id);
+        $member = \App\Models\Member::where('status', 'approved')
+            ->findOrFail($id);
         return view('frontend.member-show', compact('member'));
     }
 

@@ -99,13 +99,21 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                 <template x-for="member in visible" :key="member.id">
                     <a :href="'{{ route('members.show', ':id') }}'.replace(':id', member.id)" class="bg-gray-800 rounded-lg p-6 text-center hover:bg-gray-700 transition animate-fade-in group border border-transparent hover:border-red-500 cursor-pointer block">
                         <div class="w-24 h-24 mx-auto bg-gray-700 rounded-full mb-4 overflow-hidden ring-2 ring-gray-600 group-hover:ring-red-500 transition relative">
                             <img :src="member.image ? (member.image.startsWith('http') ? member.image : '{{ asset('storage') }}/' + member.image) : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(member.name)" class="w-full h-full object-cover" :alt="member.name">
                         </div>
-                        <h3 class="text-lg font-semibold text-white" x-text="member.name"></h3>
+                        <h3 class="text-base sm:text-lg font-semibold text-white flex items-center justify-center flex-wrap">
+                            <span x-text="member.name"></span>
+                            <span class="relative inline-flex items-center justify-center ml-1.5" x-show="member.membership_status === 'active'">
+                                <i class="fas fa-certificate text-base sm:text-lg animate-pulse-slow" 
+                                   :class="member.membership_type === 'lifetime' ? 'text-blue-900 glow-lifetime' : 'text-blue-400 glow-yearly'"
+                                   :title="member.membership_type === 'lifetime' ? 'Lifetime Verified' : 'Yearly Verified'"></i>
+                                <i class="fas fa-check text-white absolute" style="font-size: 0.35rem;"></i>
+                            </span>
+                        </h3>
                         <p class="text-xs text-red-500 font-bold uppercase tracking-wider mb-1" x-text="member.title || 'Photographer'"></p>
                         <p class="text-xs text-gray-500" x-text="(member.district ? member.district + ', ' : '') + (member.division || '')"></p>
                         

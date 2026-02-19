@@ -2,7 +2,7 @@
 
 @section('content')
     <!-- Hero Slider Section -->
-    <div class="relative w-full h-[450px] md:h-[800px] overflow-hidden" x-data="{ 
+    <div class="relative w-full h-[350px] sm:h-[450px] md:h-[800px] overflow-hidden" x-data="{ 
         activeSlide: 0,
         slides: [
             @foreach($sliders as $slider)
@@ -33,7 +33,7 @@
                         <span x-text="slide.subtitle"></span>
                     </h2>
                     <a href="{{ route('registration') }}" 
-                       class="px-8 py-3 border-2 border-white text-white font-semibold uppercase tracking-wider hover:bg-white hover:text-black transition duration-300 opacity-0 transform translate-y-10 transition-all duration-1000 delay-700"
+                       class="px-6 py-2 sm:px-8 sm:py-3 border-2 border-white text-white text-sm sm:text-base font-semibold uppercase tracking-wider hover:bg-white hover:text-black transition duration-300 opacity-0 transform translate-y-10 transition-all duration-1000 delay-700"
                        :class="{ 'opacity-100 translate-y-0': activeSlide === index }">
                         Join Our Community
                     </a>
@@ -76,29 +76,29 @@
                     <p class="text-gray-400 text-lg leading-relaxed">
                         {{ Str::limit($about->description ?? 'The Photography Association Bangladesh (PAB) is more than just a club; it\'s a movement. We bring together passionate photographers from all walks of life to share knowledge, inspire creativity, and showcase the stunning visuals of our nation to the world.', 300) }}
                     </p>
-                    <div class="grid grid-cols-2 gap-8 py-4">
+                    <div class="grid grid-cols-2 gap-4 sm:gap-8 py-4">
                         <div>
-                            <span class="block text-4xl font-bold text-white mb-2">{{ $about->stats_members ?? '500+' }}</span>
-                            <span class="text-sm text-gray-500 uppercase tracking-widest">Active Members</span>
+                            <span class="block text-2xl sm:text-4xl font-bold text-white mb-2">{{ $about->stats_members ?? '500+' }}</span>
+                            <span class="text-xs sm:text-sm text-gray-500 uppercase tracking-widest">Active Members</span>
                         </div>
                         <div>
-                            <span class="block text-4xl font-bold text-white mb-2">{{ $about->stats_workshops ?? '120+' }}</span>
-                            <span class="text-sm text-gray-500 uppercase tracking-widest">Workshops & Events</span>
+                            <span class="block text-2xl sm:text-4xl font-bold text-white mb-2">{{ $about->stats_workshops ?? '120+' }}</span>
+                            <span class="text-xs sm:text-sm text-gray-500 uppercase tracking-widest">Workshops & Events</span>
                         </div>
                     </div>
                     <a href="{{ route('about') }}" class="inline-block text-red-500 border-b border-red-500 pb-1 hover:text-red-400 hover:border-red-400 transition">
                         Learn More About Us &rarr;
                     </a>
                 </div>
-                <div class="relative"
+                <div class="relative mt-8 md:mt-0"
                      x-data="{ shown: false }" 
                      x-intersect.once="shown = true"
                      :class="{ 'opacity-0 scale-95': !shown, 'opacity-100 scale-100': shown }"
                      class="transition-all duration-1000 ease-out delay-300">
-                    <div class="absolute inset-0 bg-red-500 transform translate-x-4 translate-y-4 rounded-lg"></div>
+                    <div class="hidden sm:block absolute inset-0 bg-red-500 transform translate-x-4 translate-y-4 rounded-lg"></div>
                     <img src="{{ isset($about->image_main) ? (Str::startsWith($about->image_main, ['http://', 'https://']) ? $about->image_main : asset('storage/' . $about->image_main)) : 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=2000&auto=format&fit=crop' }}" 
                          alt="{{ $about->title ?? 'Who We Are' }}" 
-                         class="relative rounded-lg shadow-2xl grayscale hover:grayscale-0 transition duration-500 w-full h-[400px] object-cover">
+                         class="relative rounded-lg shadow-2xl grayscale hover:grayscale-0 transition duration-500 w-full h-[250px] sm:h-[400px] object-cover">
                 </div>
             </div>
         </div>
@@ -110,7 +110,8 @@
             <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Latest Captures</h2>
             <div class="w-24 h-1 bg-red-500 mx-auto"></div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
              @forelse($latest_works as $work)
                 <div class="group relative overflow-hidden h-80"
                      x-data="{ shown: false }" 
@@ -129,6 +130,7 @@
                     No gallery items captured yet. Stay tuned!
                 </div>
              @endforelse
+            </div>
         </div>
         <div class="text-center mt-12">
              <a href="{{ route('gallery') }}" class="inline-block px-8 py-3 bg-red-600 text-white font-semibold rounded hover:bg-red-700 transition">View Full Gallery</a>

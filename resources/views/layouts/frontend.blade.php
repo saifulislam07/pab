@@ -56,7 +56,7 @@
                         <div class="shrink-0 flex items-center">
                             <a href="{{ route('home') }}">
                                 @if(isset($site_setting->logo))
-                                    <img src="{{ asset('storage/' . $site_setting->logo) }}" alt="{{ $site_setting->site_name }}" class="h-16 w-auto">
+                                    <img src="{{ asset('storage/' . $site_setting->logo) }}" alt="{{ $site_setting->site_name }}" class="h-10 sm:h-16 w-auto">
                                 @else
                                     <img src="{{ asset('images/logo.svg') }}" alt="PAB Logo" class="h-16 w-auto">
                                 @endif
