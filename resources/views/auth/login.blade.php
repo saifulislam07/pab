@@ -9,14 +9,14 @@
             
             <!-- Information Side -->
             <div class="md:w-1/2 bg-red-900 p-8 text-white flex flex-col justify-center">
-                <h2 class="text-3xl font-bold mb-6">Welcome Back</h2>
+                <h2 class="text-3xl font-bold mb-6">{{ $site_setting->login_title ?? 'Welcome Back' }}</h2>
                 <p class="mb-6 text-red-100 leading-relaxed">
-                    Log in to access your dashboard and manage your projects with the Photography Association Bangladesh.
+                    {{ $site_setting->login_description ?? 'Log in to access your dashboard and manage your projects with the Photography Association Bangladesh.' }}
                 </p>
                 <ul class="space-y-4 text-sm">
-                    <li class="flex items-center"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Access Your Dashboard</li>
-                    <li class="flex items-center"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Manage Your Portfolio</li>
-                    <li class="flex items-center"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Stay Connected</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> {{ $site_setting->login_feature_1 ?? 'Access Your Dashboard' }}</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> {{ $site_setting->login_feature_2 ?? 'Manage Your Portfolio' }}</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> {{ $site_setting->login_feature_3 ?? 'Stay Connected' }}</li>
                 </ul>
             </div>
 

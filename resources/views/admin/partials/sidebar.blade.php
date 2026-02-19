@@ -19,14 +19,17 @@
                      style="width: 34px; height: 34px; object-fit: cover;">
             </div>
             <div class="info">
-                <a href="{{ route('admin.profile.edit') }}" class="d-block">{{ Auth::user()->name }}</a>
+                <a href="{{ auth()->user()->isAdmin() ? route('admin.profile.edit') : route('member.profile.edit') }}" class="d-block">{{ Auth::user()->name }}</a>
             </div>
         </div>
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                @foreach($admin_menus as $menu)
+                @php
+                    $menusToDisplay = auth()->user()->isAdmin() ? $admin_menus : $member_menus;
+                @endphp
+                @foreach($menusToDisplay as $menu)
                     @php
                         $hasChildren = $menu->children->count() > 0;
                         $isActive = request()->is(trim($menu->url, '/') . '*') || ($menu->url && request()->fullUrlIs(url($menu->url) . '*'));

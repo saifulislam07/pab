@@ -9,20 +9,12 @@
         <div class="card card-outline card-primary">
             <div class="card-header">
                 <h3 class="card-title">All Gallery Items</h3>
-                <div class="card-tools d-flex">
-                    <form action="{{ route('admin.gallery.index') }}" method="GET" class="input-group input-group-sm d-inline-flex mr-2" style="width: 250px;">
-                        <input type="text" name="search" class="form-control" placeholder="Search title..." value="{{ request('search') }}">
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-search"></i>
-                            </button>
-                            @if(request('search'))
-                                <a href="{{ route('admin.gallery.index') }}" class="btn btn-danger" title="Clear Search">
-                                    <i class="fas fa-times"></i>
-                                </a>
-                            @endif
-                        </div>
-                    </form>
+                <div class="card-tools d-flex align-items-center">
+                    @include('admin.partials.search', [
+                        'route' => route('admin.gallery.index'),
+                        'placeholder' => 'Search title...',
+                        'clearRoute' => route('admin.gallery.index')
+                    ])
                     <a href="{{ route('admin.gallery.batch') }}" class="btn btn-info btn-sm mr-2 text-white">
                         <i class="fas fa-layer-group"></i> Batch Upload
                     </a>

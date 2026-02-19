@@ -27,22 +27,30 @@
                         @endif
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label>Facebook URL</label>
                                 <input type="url" name="facebook" class="form-control" value="{{ $team->facebook }}">
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label>Twitter URL</label>
-                                <input type="url" name="twitter" class="form-control" value="{{ $team->twitter }}">
+                                <label>Instagram URL</label>
+                                <input type="url" name="instagram" class="form-control" value="{{ $team->instagram }}">
                             </div>
                         </div>
-                        <div class="col-md-4">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label>LinkedIn URL</label>
                                 <input type="url" name="linkedin" class="form-control" value="{{ $team->linkedin }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Website URL</label>
+                                <input type="url" name="website" class="form-control" value="{{ $team->website }}">
                             </div>
                         </div>
                     </div>

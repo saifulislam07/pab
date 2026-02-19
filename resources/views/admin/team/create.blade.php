@@ -23,22 +23,30 @@
                         <input type="file" name="image" class="form-control-file">
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label>Facebook URL</label>
-                                <input type="url" name="facebook" class="form-control">
+                                <input type="url" name="facebook" class="form-control" placeholder="https://facebook.com/username">
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label>Twitter URL</label>
-                                <input type="url" name="twitter" class="form-control">
+                                <label>Instagram URL</label>
+                                <input type="url" name="instagram" class="form-control" placeholder="https://instagram.com/username">
                             </div>
                         </div>
-                        <div class="col-md-4">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label>LinkedIn URL</label>
-                                <input type="url" name="linkedin" class="form-control">
+                                <input type="url" name="linkedin" class="form-control" placeholder="https://linkedin.com/in/username">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Website URL</label>
+                                <input type="url" name="website" class="form-control" placeholder="https://example.com">
                             </div>
                         </div>
                     </div>

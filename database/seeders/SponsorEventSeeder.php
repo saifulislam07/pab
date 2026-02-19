@@ -15,7 +15,7 @@ class SponsorEventSeeder extends Seeder {
         ];
 
         foreach ($sponsors as $s) {
-            Sponsor::create($s);
+            Sponsor::updateOrCreate(['name' => $s['name']], $s);
         }
 
         $events = [
@@ -52,7 +52,7 @@ class SponsorEventSeeder extends Seeder {
         ];
 
         foreach ($events as $e) {
-            Event::create($e);
+            Event::updateOrCreate(['slug' => $e['slug']], $e);
         }
     }
 }

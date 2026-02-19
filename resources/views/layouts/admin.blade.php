@@ -3,7 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', config('app.name', 'AdminLTE'))</title>
+    <title>@yield('title', $site_setting->site_title ?? config('app.name', 'AdminLTE'))</title>
+
+    @if($site_setting->favicon)
+        <link rel="icon" type="image/png" href="{{ asset('storage/' . $site_setting->favicon) }}">
+    @endif
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">

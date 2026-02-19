@@ -4,32 +4,20 @@
 @section('page_title', 'Advertisements')
 
 @section('content')
-<div class="row mb-3">
-    <div class="col-md-6">
-        <a href="{{ route('admin.advertisements.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus mr-1"></i> Add Advertisement
-        </a>
+<div class="card card-outline card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Advertisements List</h3>
+        <div class="card-tools d-flex align-items-center">
+            @include('admin.partials.search', [
+                'route' => route('admin.advertisements.index'),
+                'placeholder' => 'Search advertisements...',
+                'clearRoute' => route('admin.advertisements.index')
+            ])
+            <a href="{{ route('admin.advertisements.create') }}" class="btn btn-primary btn-sm ml-2">
+                <i class="fas fa-plus"></i> Add Advertisement
+            </a>
+        </div>
     </div>
-    <div class="col-md-6">
-        <form action="{{ route('admin.advertisements.index') }}" method="GET">
-            <div class="input-group">
-                <input type="text" name="search" class="form-control" placeholder="Search advertisements..." value="{{ request('search') }}">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
-                    @if(request('search'))
-                        <a href="{{ route('admin.advertisements.index') }}" class="btn btn-outline-danger"><i class="fas fa-times"></i></a>
-                    @endif
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-@if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-@endif
-
-<div class="card">
     <div class="card-body table-responsive p-0">
         <table class="table table-hover text-nowrap">
             <thead>

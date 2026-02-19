@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder {
      */
     public function run(): void {
         $this->call([
+            MenuSeeder::class,
             SettingSeeder::class,
             AboutSeeder::class,
             MissionVisionSeeder::class,
@@ -25,14 +26,29 @@ class DatabaseSeeder extends Seeder {
 
         // Seed Members
         $roles = ['President', 'Secretary', 'Treasurer', 'Member'];
+        // Seed Members
+        $roles = ['President', 'Secretary', 'Treasurer', 'Member'];
         for ($i = 1; $i <= 10; $i++) {
-            \App\Models\Member::create([
-                'name'   => 'Member ' . $i,
-                'role'   => $roles[array_rand($roles)],
-                'image'  => 'https://i.pravatar.cc/150?img=' . $i,
-                'bio'    => 'Passionate photographer with a love for capturing moments.',
-                'status' => 'approved',
-            ]);
+            $user = \App\Models\User::firstOrCreate(
+                ['email' => 'member' . $i . '@example.com'],
+                [
+                    'name'     => 'Member ' . $i,
+                    'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                    'role'     => 'member',
+                ]
+            );
+
+            \App\Models\Member::updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'email'  => $user->email,
+                    'name'   => $user->name,
+                    'role'   => $roles[array_rand($roles)],
+                    'image'  => 'https://i.pravatar.cc/150?img=' . $i,
+                    'bio'    => 'Passionate photographer with a love for capturing moments.',
+                    'status' => 'approved',
+                ]
+            );
         }
 
         // Seed Categories first if they don't exist

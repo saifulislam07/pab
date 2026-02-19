@@ -38,6 +38,11 @@ class FrontendController extends Controller {
         return view('frontend.members', compact('members'));
     }
 
+    public function memberShow($id) {
+        $member = \App\Models\Member::where('status', 'approved')->findOrFail($id);
+        return view('frontend.member-show', compact('member'));
+    }
+
     public function events(\Illuminate\Http\Request $request) {
         $type = $request->query('type', 'current');
         $search = $request->query('search'); // Get search query

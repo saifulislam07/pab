@@ -8,20 +8,12 @@
         <div class="card card-outline card-primary">
             <div class="card-header">
                 <h3 class="card-title">All Roles</h3>
-                <div class="card-tools d-flex">
-                    <form action="{{ route('admin.roles.index') }}" method="GET" class="input-group input-group-sm d-inline-flex mr-2" style="width: 250px;">
-                        <input type="text" name="search" class="form-control" placeholder="Search role name..." value="{{ request('search') }}">
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-search"></i>
-                            </button>
-                            @if(request('search'))
-                                <a href="{{ route('admin.roles.index') }}" class="btn btn-danger" title="Clear Search">
-                                    <i class="fas fa-times"></i>
-                                </a>
-                            @endif
-                        </div>
-                    </form>
+                <div class="card-tools d-flex align-items-center">
+                    @include('admin.partials.search', [
+                        'route' => route('admin.roles.index'),
+                        'placeholder' => 'Search role name...',
+                        'clearRoute' => route('admin.roles.index')
+                    ])
                     <a href="{{ route('admin.roles.create') }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i> Create New Role
                     </a>

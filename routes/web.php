@@ -9,14 +9,42 @@ Route::controller(FrontendController::class)->group(function () {
     Route::get('/mission-vision', 'missionVision')->name('mission-vision');
     Route::get('/team', 'team')->name('team');
     Route::get('/members', 'members')->name('members');
+    Route::get('/members/{member}', 'memberShow')->name('members.show');
     Route::get('/registration', 'registration')->name('registration');
     Route::get('/gallery', 'gallery')->name('gallery');
     Route::get('/gallery-items', 'galleryItems')->name('gallery.items');
     Route::get('/contact', 'contact')->name('contact');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'profile.complete'])->group(function () {
     Route::get('/dashboard', function () {
+        return auth()->user()->isAdmin()
+        ? redirect()->route('admin.dashboard')
+        : redirect()->route('member.dashboard');
+    })->name('dashboard');
+
+    Route::get('/member/dashboard', [App\Http\Controllers\Member\DashboardController::class, 'index'])->name('member.dashboard');
+
+    // Member Profile Completion
+    Route::get('/member/profile/complete', [App\Http\Controllers\Member\ProfileController::class, 'edit'])->name('member.profile.edit');
+    Route::put('/member/profile/complete', [App\Http\Controllers\Member\ProfileController::class, 'update'])->name('member.profile.update');
+
+    // District API for cascading dropdown
+    Route::get('/api/districts/{division}', function ($division) {
+        return \App\Models\District::where('division', $division)->orderBy('name')->pluck('name');
+    })->name('api.districts');
+
+    // Generic Profile Redirect
+    Route::get('/profile', function () {
+        return auth()->user()->isAdmin()
+        ? redirect()->route('admin.profile.edit')
+        : redirect()->route('member.profile.edit');
+    })->name('profile.edit');
+});
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    // Admin Dashboard (Internal name for redirection)
+    Route::get('/admin/dashboard', function () {
         $stats = [
             'total_members'   => \App\Models\Member::where('status', 'approved')->count(),
             'pending_members' => \App\Models\Member::where('status', 'pending')->count(),
@@ -26,12 +54,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'total_earnings'  => \App\Models\Earning::sum('amount'),
         ];
         return view('dashboard', compact('stats'));
-    })->name('dashboard');
+    })->name('admin.dashboard');
 
-    Route::get('/member/dashboard', [App\Http\Controllers\Member\DashboardController::class, 'index'])->name('member.dashboard');
-});
-
-Route::middleware(['auth', 'admin'])->group(function () {
     // Admin Profile
     Route::get('/admin/profile', [App\Http\Controllers\Admin\AdminProfileController::class, 'edit'])->name('admin.profile.edit');
     Route::put('/admin/profile', [App\Http\Controllers\Admin\AdminProfileController::class, 'update'])->name('admin.profile.update');

@@ -42,4 +42,8 @@ class Menu extends Model {
     public function scopeAdmin($query) {
         return $query->where('type', 'admin');
     }
+
+    public function scopeMember($query) {
+        return $query->where('type', 'member');
+    }
 }

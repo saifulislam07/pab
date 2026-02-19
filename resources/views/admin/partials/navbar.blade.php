@@ -20,7 +20,7 @@
                 <span class="d-none d-md-inline ml-1">{{ Auth::user()->name }}</span>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
-                <a href="{{ route('admin.profile.edit') }}" class="dropdown-item">
+                <a href="{{ auth()->user()->isAdmin() ? route('admin.profile.edit') : route('member.profile.edit') }}" class="dropdown-item">
                     <i class="fas fa-user-edit mr-2"></i> My Profile
                 </a>
                 <div class="dropdown-divider"></div>

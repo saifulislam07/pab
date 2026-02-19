@@ -31,7 +31,7 @@ class MenuServiceProvider extends ServiceProvider {
             $view->with('menus', $menus);
         });
 
-        // Admin Sidebar Menus
+        // Admin & Member Sidebar Menus
         View::composer('admin.partials.sidebar', function ($view) {
             $admin_menus = Menu::active()
                 ->admin()
@@ -41,7 +41,16 @@ class MenuServiceProvider extends ServiceProvider {
                 }])
                 ->get();
 
+            $member_menus = Menu::active()
+                ->member()
+                ->topLevel()
+                ->with(['children' => function ($query) {
+                    $query->active();
+                }])
+                ->get();
+
             $view->with('admin_menus', $admin_menus);
+            $view->with('member_menus', $member_menus);
         });
     }
 }

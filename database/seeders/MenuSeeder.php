@@ -18,7 +18,7 @@ class MenuSeeder extends Seeder {
             ['title' => 'Team', 'url' => '/team', 'position' => 3, 'type' => 'frontend'],
             ['title' => 'Members', 'url' => '/members', 'position' => 4, 'type' => 'frontend'],
             ['title' => 'Events', 'url' => '/events', 'position' => 5, 'type' => 'frontend'],
-            ['title' => 'Registration', 'url' => '/registration', 'position' => 6, 'type' => 'frontend'],
+            ['title' => 'Registration', 'url' => '/register', 'position' => 6, 'type' => 'frontend'],
             ['title' => 'Gallery', 'url' => '/gallery', 'position' => 7, 'type' => 'frontend'],
             ['title' => 'Contact', 'url' => '/contact', 'position' => 8, 'type' => 'frontend'],
         ];
@@ -49,6 +49,18 @@ class MenuSeeder extends Seeder {
 
         foreach ($adminMenus as $menu) {
             Menu::updateOrCreate(['title' => $menu['title'], 'type' => 'admin'], $menu);
+        }
+
+        // Member Menus
+        $memberMenus = [
+            ['title' => 'My Dashboard', 'url' => 'member/dashboard', 'icon' => 'fas fa-tachometer-alt', 'position' => 0, 'type' => 'member'],
+            ['title' => 'My Profile', 'url' => 'member/profile/complete', 'icon' => 'fas fa-user-circle', 'position' => 1, 'type' => 'member'],
+            ['title' => 'Events', 'url' => 'events', 'icon' => 'fas fa-calendar-alt', 'position' => 2, 'type' => 'member'],
+            ['title' => 'Gallery', 'url' => 'gallery', 'icon' => 'fas fa-images', 'position' => 3, 'type' => 'member'],
+        ];
+
+        foreach ($memberMenus as $menu) {
+            Menu::updateOrCreate(['title' => $menu['title'], 'type' => 'member'], $menu);
         }
     }
 }

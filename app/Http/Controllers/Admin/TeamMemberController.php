@@ -31,8 +31,9 @@ class TeamMemberController extends Controller {
             'role'      => 'required|string|max:255',
             'image'     => 'nullable|image|max:2048',
             'facebook'  => 'nullable|url',
-            'twitter'   => 'nullable|url',
+            'instagram' => 'nullable|url',
             'linkedin'  => 'nullable|url',
+            'website'   => 'nullable|url',
             'order'     => 'nullable|integer',
             'is_active' => 'nullable|boolean',
         ]);
@@ -56,8 +57,9 @@ class TeamMemberController extends Controller {
             'role'      => 'required|string|max:255',
             'image'     => 'nullable|image|max:2048',
             'facebook'  => 'nullable|url',
-            'twitter'   => 'nullable|url',
+            'instagram' => 'nullable|url',
             'linkedin'  => 'nullable|url',
+            'website'   => 'nullable|url',
             'order'     => 'nullable|integer',
             'is_active' => 'nullable|boolean',
         ]);
