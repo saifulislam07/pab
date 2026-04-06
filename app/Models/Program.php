@@ -9,7 +9,7 @@ class Program extends Model {
     use HasFactory;
 
     protected $fillable = [
-        'title', 'slug', 'description', 'image', 'start_date', 'end_date', 'location', 'is_active', 'is_registration_active', 'registration_fields', 'registration_fee',
+        'title', 'slug', 'description', 'image', 'start_date', 'end_date', 'registration_deadline', 'location', 'is_active', 'is_registration_active', 'registration_fields', 'registration_fee',
     ];
 
     protected $casts = [
@@ -20,5 +20,9 @@ class Program extends Model {
 
     public function registrations() {
         return $this->hasMany(ProgramRegistration::class);
+    }
+
+    public function sponsors() {
+        return $this->belongsToMany(Sponsor::class);
     }
 }

@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder {
             \Database\Seeders\SponsorEventSeeder::class,
             HugeDataSeeder::class,
             DistrictSeeder::class,
+            ProgramMenuSeeder::class,
         ]);
 
         // Seed Members

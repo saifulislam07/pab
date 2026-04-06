@@ -105,6 +105,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // Program Routes
     Route::get('admin/programs/{program}/registrations', [App\Http\Controllers\Admin\ProgramController::class, 'registrations'])->name('admin.programs.registrations');
+    Route::get('admin/programs/{program}/registrations/export', [App\Http\Controllers\Admin\ProgramController::class, 'exportRegistrations'])->name('admin.programs.registrations.export');
+    Route::patch('admin/programs/registrations/{registration}/status', [App\Http\Controllers\Admin\ProgramController::class, 'updateRegistrationStatus'])->name('admin.programs.registrations.status');
+    Route::get('admin/programs/registrations/{registration}', [App\Http\Controllers\Admin\ProgramController::class, 'showRegistration'])->name('admin.programs.registrations.show');
     Route::resource('admin/programs', App\Http\Controllers\Admin\ProgramController::class)->names('admin.programs');
 
     // Advertisements

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
+
 class FrontendController extends Controller {
     public function index() {
         $sliders = \App\Models\Slider::where('is_active', true)->orderBy('order')->get();
@@ -145,6 +147,9 @@ class FrontendController extends Controller {
     public function programShow($slug) {
         $program = \App\Models\Program::where('slug', $slug)
             ->where('is_active', true)
+            ->with(['sponsors', 'registrations' => function($q) {
+                $q->latest();
+            }])
             ->firstOrFail();
 
         $bannerAds = \App\Models\Advertisement::active()->where('position', 'banner')->get();
@@ -159,14 +164,82 @@ class FrontendController extends Controller {
             ->where('is_active', true)
             ->firstOrFail();
 
+        // Convert Bengali numbers to English
+        $input = $request->all();
+        $banglaToEnglishMap = ['০'=>'0','১'=>'1','২'=>'2','৩'=>'3','৪'=>'4','৫'=>'5','৬'=>'6','৭'=>'7','৮'=>'8','৯'=>'9'];
+        foreach ($input as $key => $value) {
+            if (is_string($value)) {
+                $input[$key] = strtr($value, $banglaToEnglishMap);
+            }
+        }
+        $request->merge($input);
+
         $rules = [];
+        $messages = [];
         if ($program->registration_fields) {
             foreach ($program->registration_fields as $field) {
-                $rules[str_replace(' ', '_', strtolower($field))] = 'required|string|max:255';
+                $isObject = is_array($field);
+                $label = $isObject ? ($field['name'] ?? '') : $field;
+                $type = $isObject ? ($field['type'] ?? 'text') : 'text';
+                $required = $isObject ? ($field['required'] ?? true) : true;
+                $fieldName = str_replace(' ', '_', strtolower($label));
+
+                $fieldRules = [$required ? 'required' : 'nullable'];
+                
+                if ($type == 'email') $fieldRules[] = 'email';
+                if ($type == 'number') $fieldRules[] = 'numeric';
+                if ($type == 'date') $fieldRules[] = 'date';
+                if ($type == 'photo') $fieldRules[] = 'image|max:5120';
+                if ($type == 'textarea' || $type == 'text') $fieldRules[] = 'string';
+
+                // Check for amount/fee to enforce minimum registration fee
+                if (Str::contains($fieldName, ['amount', 'fee', 'টাকা', 'ফি', 'আমাউন্ট'])) {
+                    if ($program->registration_fee > 0) {
+                        if (!in_array('numeric', $fieldRules)) {
+                            $fieldRules[] = 'numeric';
+                        }
+                        $fieldRules[] = 'min:' . $program->registration_fee;
+                        $messages["$fieldName.min"] = "The $label cannot be less than the registration fee of {$program->registration_fee}.";
+                    }
+                }
+
+                // Check for transaction ID to enforce english alphanumeric
+                if (Str::contains($fieldName, ['transaction', 'trx', 'ট্রানজ্যাকশন', 'ট্রানজেকশন'])) {
+                    $fieldRules[] = 'regex:/^[a-zA-Z0-9]+$/';
+                    $messages["$fieldName.regex"] = "The $label must contain only English letters and numbers.";
+                }
+
+                $rules[$fieldName] = implode('|', $fieldRules);
             }
         }
 
-        $validatedData = $request->validate($rules);
+        $validatedData = $request->validate($rules, $messages);
+
+        // Handle file uploads
+        if ($program->registration_fields) {
+            foreach ($program->registration_fields as $field) {
+                $isObject = is_array($field);
+                $label = $isObject ? ($field['name'] ?? '') : $field;
+                $type = $isObject ? ($field['type'] ?? 'text') : 'text';
+                $fieldName = str_replace(' ', '_', strtolower($label));
+
+                if ($type == 'photo' && $request->hasFile($fieldName)) {
+                    $image = $request->file($fieldName);
+                    $imageName = 'reg_' . time() . '_' . $image->getClientOriginalName();
+                    $image->move(public_path('programe'), $imageName);
+                    $validatedData[$fieldName] = $imageName;
+                }
+            }
+        }
+
+        // Extract potential transaction ID for the top-level column
+        $transactionId = null;
+        foreach ($validatedData as $key => $value) {
+            if (Str::contains(strtolower($key), ['transaction', 'trx', 'ট্রানজ্যাকশন', 'ট্রানজেকশন'])) {
+                $transactionId = $value;
+                break;
+            }
+        }
 
         \App\Models\ProgramRegistration::create([
             'program_id'        => $program->id,
@@ -174,6 +247,7 @@ class FrontendController extends Controller {
             'registration_data' => $validatedData,
             'status'            => 'pending',
             'payment_status'    => $program->registration_fee > 0 ? 'unpaid' : 'paid',
+            'transaction_id'    => $transactionId,
         ]);
 
         return redirect()->back()->with('success', 'Registration submitted successfully!');

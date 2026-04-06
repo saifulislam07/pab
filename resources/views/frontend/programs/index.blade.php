@@ -37,16 +37,21 @@
                         <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg group hover:-translate-y-2 transition duration-300 border border-gray-700">
                             <div class="relative h-56 overflow-hidden">
                                 @if($program->image)
-                                    <img src="{{ Str::startsWith($program->image, ['http://', 'https://']) ? $program->image : asset('storage/' . $program->image) }}" alt="{{ $program->title }}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                                    <img src="{{ Str::startsWith($program->image, ['http://', 'https://']) ? $program->image : asset('programe/' . $program->image) }}" alt="{{ $program->title }}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
                                 @else
                                     <div class="w-full h-full bg-gray-700 flex items-center justify-center">
                                         <span class="text-gray-500">No Image</span>
                                     </div>
                                 @endif
                                 @if($program->is_registration_active)
-                                    <div class="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
-                                        Registration Open
-                                    </div>
+                                    @php
+                                        $isDeadlinePassed = $program->registration_deadline && \Carbon\Carbon::now()->startOfDay()->gt(\Carbon\Carbon::parse($program->registration_deadline)->startOfDay());
+                                    @endphp
+                                    @if(!$isDeadlinePassed)
+                                        <div class="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
+                                            Registration Open
+                                        </div>
+                                    @endif
                                 @endif
                             </div>
                             <div class="p-6">

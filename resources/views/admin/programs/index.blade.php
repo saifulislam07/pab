@@ -27,7 +27,9 @@
                             <th>Image</th>
                             <th>Title</th>
                             <th>Date</th>
+                            <th>Reg. Deadline</th>
                             <th>Location</th>
+                            <th>Sponsors</th>
                             <th>Status</th>
                             <th class="text-right">Actions</th>
                         </tr>
@@ -37,14 +39,35 @@
                         <tr>
                             <td>
                                 @if($program->image)
-                                    <img src="{{ asset('storage/' . $program->image) }}" width="60" class="img-thumbnail rounded shadow-sm">
+                                    <img src="{{ asset('programe/' . $program->image) }}" width="60" class="img-thumbnail rounded shadow-sm">
                                 @else
                                     <span class="text-muted">No Image</span>
                                 @endif
                             </td>
                             <td class="align-middle">{{ $program->title }}</td>
-                            <td class="align-middle">{{ $program->start_date ? \Carbon\Carbon::parse($program->start_date)->format('M d, Y') : 'N/A' }}</td>
+                            <td class="align-middle text-sm text-muted">
+                                <strong>Start:</strong> {{ $program->start_date ? \Carbon\Carbon::parse($program->start_date)->format('M d, Y') : 'N/A' }}<br>
+                                <strong>End:</strong> {{ $program->end_date ? \Carbon\Carbon::parse($program->end_date)->format('M d, Y') : 'N/A' }}
+                            </td>
+                            <td class="align-middle">
+                                @if($program->registration_deadline)
+                                    <span class="badge {{ \Carbon\Carbon::parse($program->registration_deadline)->isPast() ? 'badge-danger' : 'badge-info' }}">
+                                        {{ \Carbon\Carbon::parse($program->registration_deadline)->format('M d, Y') }}
+                                    </span>
+                                @else
+                                    <span class="text-muted">No Deadline</span>
+                                @endif
+                            </td>
                             <td class="align-middle">{{ $program->location }}</td>
+                            <td class="align-middle">
+                                @if($program->sponsors->count() > 0)
+                                    @foreach($program->sponsors as $sponsor)
+                                        <span class="badge badge-secondary mb-1" title="{{ $sponsor->name }}">{{ Str::limit($sponsor->name, 15) }}</span><br>
+                                    @endforeach
+                                @else
+                                    <span class="text-muted text-sm">None</span>
+                                @endif
+                            </td>
                             <td class="align-middle">
                                 <span class="badge {{ $program->is_active ? 'badge-success' : 'badge-danger' }}">
                                     {{ $program->is_active ? 'Active' : 'Inactive' }}

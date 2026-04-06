@@ -32,12 +32,17 @@
                 @foreach($menusToDisplay as $menu)
                     @php
                         $hasChildren = $menu->children->count() > 0;
-                        $isActive = request()->is(trim($menu->url, '/') . '*') || ($menu->url && request()->fullUrlIs(url($menu->url) . '*'));
+                        $isActive = false;
+                        if ($menu->url) {
+                            $isActive = request()->is(trim($menu->url, '/') . '*') || 
+                                        (Route::has($menu->url) ? request()->routeIs($menu->url . '*') : request()->fullUrlIs(url($menu->url) . '*'));
+                        }
                         
                         // Special check for nested active state
                         if (!$isActive && $hasChildren) {
                             foreach($menu->children as $child) {
-                                if (request()->is(trim($child->url, '/') . '*') || ($child->url && request()->fullUrlIs(url($child->url) . '*'))) {
+                                if ($child->url && (request()->is(trim($child->url, '/') . '*') || 
+                                    (Route::has($child->url) ? request()->routeIs($child->url . '*') : request()->fullUrlIs(url($child->url) . '*')))) {
                                     $isActive = true;
                                     break;
                                 }

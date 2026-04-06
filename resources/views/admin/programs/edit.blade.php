@@ -19,30 +19,49 @@
                         <label>Description</label>
                         <textarea name="description" class="form-control" rows="5" required id="summernote">{{ $program->description }}</textarea>
                     </div>
-                    <div class="form-group">
-                        <label>Banner Image</label>
-                        <input type="file" name="image" class="form-control-file">
-                        @if($program->image)
-                            <img src="{{ asset('storage/' . $program->image) }}" width="150" class="mt-2 img-thumbnail">
-                        @endif
-                    </div>
+                        <div class="form-group">
+                            <label>Banner Image</label>
+                            <input type="file" name="image" class="form-control-file" id="image_input">
+                            <div id="image_preview" class="mt-2">
+                                @if($program->image)
+                                    <img src="{{ asset('programe/' . $program->image) }}" width="150" class="img-thumbnail" id="preview_img">
+                                @else
+                                    <img src="#" alt="Preview" width="150" class="img-thumbnail" id="preview_img" style="display: none;">
+                                @endif
+                            </div>
+                        </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label>Start Date</label>
                                 <input type="date" name="start_date" class="form-control" value="{{ $program->start_date }}">
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label>End Date</label>
                                 <input type="date" name="end_date" class="form-control" value="{{ $program->end_date }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Registration Deadline</label>
+                                <input type="date" name="registration_deadline" class="form-control" value="{{ $program->registration_deadline }}">
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Location</label>
                         <input type="text" name="location" class="form-control" value="{{ $program->location }}" placeholder="e.g. Dhaka, Remote">
+                    </div>
+                    <div class="form-group">
+                        <label>Sponsor (Optional - Multiple allowed)</label>
+                        <select name="sponsor_ids[]" class="form-control" multiple>
+                            @foreach($sponsors as $sponsor)
+                                <option value="{{ $sponsor->id }}" {{ in_array($sponsor->id, $program->sponsors->pluck('id')->toArray()) ? 'selected' : '' }}>{{ $sponsor->name }}</option>
+                            @endforeach
+                        </select>
+                        <small class="text-muted">Hold CTRL (Windows) or CMD (Mac) to select multiple.</small>
                     </div>
                     <div class="form-group">
                         <label>Is Active</label>
@@ -72,18 +91,60 @@
                             <label>Registration Fields (Information to collect)</label>
                             <div id="fields_container">
                                 @if($program->registration_fields && is_array($program->registration_fields))
-                                    @foreach($program->registration_fields as $field)
-                                        <div class="input-group mb-2 field-row">
-                                            <input type="text" name="registration_fields[]" class="form-control" value="{{ $field }}" placeholder="Field Name">
-                                            <div class="input-group-append">
+                                    @foreach($program->registration_fields as $index => $field)
+                                        @php 
+                                            $isObject = is_array($field);
+                                            $fieldName = $isObject ? ($field['name'] ?? '') : $field;
+                                            $fieldType = $isObject ? ($field['type'] ?? 'text') : 'text';
+                                            $fieldRequired = $isObject ? ($field['required'] ?? true) : true;
+                                        @endphp
+                                        <div class="row align-items-center mb-2 field-row">
+                                            <div class="col-md-5">
+                                                <input type="text" name="registration_fields[{{ $index }}][name]" class="form-control" value="{{ $fieldName }}" placeholder="Field Name" required>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <select name="registration_fields[{{ $index }}][type]" class="form-control">
+                                                    <option value="text" {{ $fieldType == 'text' ? 'selected' : '' }}>Text</option>
+                                                    <option value="number" {{ $fieldType == 'number' ? 'selected' : '' }}>Number</option>
+                                                    <option value="email" {{ $fieldType == 'email' ? 'selected' : '' }}>Email</option>
+                                                    <option value="date" {{ $fieldType == 'date' ? 'selected' : '' }}>Date</option>
+                                                    <option value="textarea" {{ $fieldType == 'textarea' ? 'selected' : '' }}>Textarea</option>
+                                                    <option value="photo" {{ $fieldType == 'photo' ? 'selected' : '' }}>Photo / File</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="custom-control custom-checkbox pt-2">
+                                                    <input type="checkbox" name="registration_fields[{{ $index }}][required]" class="custom-control-input" id="required_{{ $index }}" value="1" {{ $fieldRequired ? 'checked' : '' }}>
+                                                    <label class="custom-control-label" for="required_{{ $index }}">Required</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1 text-right">
                                                 <button type="button" class="btn btn-danger remove-field"><i class="fas fa-trash"></i></button>
                                             </div>
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="input-group mb-2 field-row">
-                                        <input type="text" name="registration_fields[]" class="form-control" placeholder="Field Name (e.g. Full Name)">
-                                        <div class="input-group-append">
+                                    <div class="row align-items-center mb-2 field-row">
+                                        <div class="col-md-5">
+                                            <input type="text" name="registration_fields[0][name]" class="form-control" placeholder="Field Name (e.g. Full Name)" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select name="registration_fields[0][type]" class="form-control">
+                                                <option value="text">Text</option>
+                                                <option value="number">Number</option>
+                                                <option value="email">Email</option>
+                                                <option value="date">Date</option>
+                                                <option value="textarea">Textarea</option>
+                                                <option value="photo">Photo / File</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="custom-control custom-checkbox pt-2">
+                                                <input type="checkbox" name="registration_fields[0][required]" class="custom-control-input" id="required_0" value="1" checked>
+                                                <label class="custom-control-label" for="required_0">Required</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1 text-right">
                                             <button type="button" class="btn btn-danger remove-field"><i class="fas fa-trash"></i></button>
                                         </div>
                                     </div>
@@ -103,9 +164,42 @@
 </div>
 @endsection
 
-@push('scripts')
+@section('styles')
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+@endsection
+
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
 <script>
     $(document).ready(function() {
+        // Image Preview logic
+        $('#image_input').change(function() {
+            const file = this.files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function(event) {
+                    $('#preview_img').attr('src', event.target.result).show();
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Initialize Summernote
+        $('#summernote').summernote({
+            height: 200,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ]
+        });
+
+        var fieldIndex = {{ $program->registration_fields ? count($program->registration_fields) : 1 }};
+
         $('#is_registration_active').change(function() {
             if($(this).is(':checked')) {
                 $('#registration_details').slideDown();
@@ -116,14 +210,33 @@
 
         $('#add_field').click(function() {
             var row = `
-                <div class="input-group mb-2 field-row">
-                    <input type="text" name="registration_fields[]" class="form-control" placeholder="Field Name">
-                    <div class="input-group-append">
+                <div class="row align-items-center mb-2 field-row">
+                    <div class="col-md-5">
+                        <input type="text" name="registration_fields[${fieldIndex}][name]" class="form-control" placeholder="Field Name" required>
+                    </div>
+                    <div class="col-md-3">
+                        <select name="registration_fields[${fieldIndex}][type]" class="form-control">
+                            <option value="text">Text</option>
+                            <option value="number">Number</option>
+                            <option value="email">Email</option>
+                            <option value="date">Date</option>
+                            <option value="textarea">Textarea</option>
+                            <option value="photo">Photo / File</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="custom-control custom-checkbox pt-2">
+                            <input type="checkbox" name="registration_fields[${fieldIndex}][required]" class="custom-control-input" id="required_${fieldIndex}" value="1" checked>
+                            <label class="custom-control-label" for="required_${fieldIndex}">Required</label>
+                        </div>
+                    </div>
+                    <div class="col-md-1 text-right">
                         <button type="button" class="btn btn-danger remove-field"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>
             `;
             $('#fields_container').append(row);
+            fieldIndex++;
         });
 
         $(document).on('click', '.remove-field', function() {
@@ -131,4 +244,4 @@
         });
     });
 </script>
-@endpush
+@endsection
