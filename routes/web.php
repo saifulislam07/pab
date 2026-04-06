@@ -103,6 +103,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('admin/sponsors/settings', [App\Http\Controllers\Admin\SponsorController::class, 'updateSettings'])->name('admin.sponsors.update-settings');
     Route::resource('admin/events', App\Http\Controllers\Admin\EventController::class)->names('admin.events');
 
+    // Program Routes
+    Route::get('admin/programs/{program}/registrations', [App\Http\Controllers\Admin\ProgramController::class, 'registrations'])->name('admin.programs.registrations');
+    Route::resource('admin/programs', App\Http\Controllers\Admin\ProgramController::class)->names('admin.programs');
+
     // Advertisements
     Route::resource('admin/advertisements', App\Http\Controllers\Admin\AdvertisementController::class)->names('admin.advertisements');
 
@@ -124,5 +128,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
 // Frontend Event Routes
 Route::get('/events', [App\Http\Controllers\FrontendController::class, 'events'])->name('events.index');
 Route::get('/events/{slug}', [App\Http\Controllers\FrontendController::class, 'eventShow'])->name('events.show');
+
+// Frontend Program Routes
+Route::get('/programs', [App\Http\Controllers\FrontendController::class, 'programs'])->name('programs.index');
+Route::get('/programs/{slug}', [App\Http\Controllers\FrontendController::class, 'programShow'])->name('programs.show');
+Route::post('/programs/{slug}/register', [App\Http\Controllers\FrontendController::class, 'programRegister'])->name('programs.register');
 
 require __DIR__ . '/auth.php';

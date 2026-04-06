@@ -122,6 +122,63 @@ class FrontendController extends Controller {
         ]);
     }
 
+    public function programs(\Illuminate\Http\Request $request) {
+        $search = $request->query('search');
+        $today = now()->toDateString();
+        $query = \App\Models\Program::where('is_active', true);
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
+
+        $programs = $query->latest()->paginate(10)->withQueryString();
+        $bannerAds = \App\Models\Advertisement::active()->where('position', 'banner')->get();
+        $sidebarAds = \App\Models\Advertisement::active()->where('position', 'sidebar')->get();
+
+        return view('frontend.programs.index', compact('programs', 'bannerAds', 'sidebarAds', 'search'));
+    }
+
+    public function programShow($slug) {
+        $program = \App\Models\Program::where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        $bannerAds = \App\Models\Advertisement::active()->where('position', 'banner')->get();
+        $sidebarAds = \App\Models\Advertisement::active()->where('position', 'sidebar')->get();
+
+        return view('frontend.programs.show', compact('program', 'bannerAds', 'sidebarAds'));
+    }
+
+    public function programRegister(\Illuminate\Http\Request $request, $slug) {
+        $program = \App\Models\Program::where('slug', $slug)
+            ->where('is_registration_active', true)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        $rules = [];
+        if ($program->registration_fields) {
+            foreach ($program->registration_fields as $field) {
+                $rules[str_replace(' ', '_', strtolower($field))] = 'required|string|max:255';
+            }
+        }
+
+        $validatedData = $request->validate($rules);
+
+        \App\Models\ProgramRegistration::create([
+            'program_id'        => $program->id,
+            'user_id'           => auth()->id(),
+            'registration_data' => $validatedData,
+            'status'            => 'pending',
+            'payment_status'    => $program->registration_fee > 0 ? 'unpaid' : 'paid',
+        ]);
+
+        return redirect()->back()->with('success', 'Registration submitted successfully!');
+    }
+
     public function contact() {
         return view('frontend.contact');
     }
