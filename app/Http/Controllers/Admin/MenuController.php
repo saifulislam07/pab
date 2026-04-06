@@ -35,7 +35,7 @@ class MenuController extends Controller {
             'type'      => $request->type,
             'icon'      => $request->icon,
             'position'  => $position,
-            'is_active' => true,
+            'is_active' => $request->has('is_active'),
         ]);
 
         return redirect()->back()->with('success', 'Menu item added successfully.');
@@ -49,7 +49,10 @@ class MenuController extends Controller {
             'icon'   => 'nullable',
         ]);
 
-        $menu->update($request->only('title', 'url', 'target', 'is_active', 'icon'));
+        $data = $request->only('title', 'url', 'target', 'icon');
+        $data['is_active'] = $request->has('is_active');
+
+        $menu->update($data);
 
         return redirect()->back()->with('success', 'Menu item updated successfully.');
     }

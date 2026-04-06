@@ -34,12 +34,20 @@
                         @if($program->sponsors->count() > 0)
                             <div class="mb-8 p-1 rounded-xl bg-gradient-to-r from-red-600/30 via-red-500/10 to-red-600/30">
                                 <div class="bg-gray-900 rounded-lg p-6">
-                                    <div class="flex items-center justify-center sm:justify-start mb-6">
-                                        <h3 class="text-xl font-black text-white flex items-center tracking-widest uppercase">
-                                            <i class="fas fa-handshake text-red-500 mr-3 text-2xl"></i>
-                                            Proud Sponsors
-                                        </h3>
-                                    </div>
+                                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+                                    <h3 class="text-xl font-black text-white flex items-center tracking-widest uppercase">
+                                        <i class="fas fa-handshake text-red-500 mr-3 text-2xl"></i>
+                                        Proud Sponsors
+                                    </h3>
+                                    <a href="tel:{{ $site_setting->contact_phone ?? '+880 1234 567890' }}" 
+                                       class="flex items-center px-4 py-2 bg-red-600/10 border border-red-600/30 rounded-lg group hover:bg-red-600 transition-all duration-300">
+                                        <i class="fas fa-phone-alt text-red-500 group-hover:text-white mr-2 text-sm animate-pulse"></i>
+                                        <div class="flex flex-col items-start leading-none">
+                                            <span class="text-[10px] font-bold text-red-500 group-hover:text-red-100 uppercase tracking-tighter mb-1">Contact for Sponsor</span>
+                                            <span class="text-sm font-black text-white">{{ $site_setting->contact_phone ?? '+880 1234 567890' }}</span>
+                                        </div>
+                                    </a>
+                                </div>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                         @foreach($program->sponsors as $sponsor)
                                             <div class="group relative bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-red-500/50 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-[0_10px_20px_rgba(220,38,38,0.2)] flex flex-col items-center text-center">

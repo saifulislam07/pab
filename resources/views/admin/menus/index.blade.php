@@ -142,6 +142,12 @@
                             <option value="_blank">New Tab</option>
                         </select>
                     </div>
+                    <div class="form-group mb-0">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="isNewItemActive" name="is_active" value="1" checked>
+                            <label class="custom-control-label" for="isNewItemActive">Is Active</label>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

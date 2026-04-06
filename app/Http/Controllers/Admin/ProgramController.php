@@ -157,9 +157,37 @@ class ProgramController extends Controller {
             'status' => 'required|in:pending,accept,reject',
         ]);
 
+        $oldStatus = $registration->status;
         $registration->update(['status' => $request->status]);
 
-        return back()->with('success', 'Registration status updated to ' . ucfirst($request->status));
+        // Auto-Earn Logic
+        $feeCategory = \App\Models\AccountCategory::where('name', 'Program Registration Fee')->first();
+        
+        if ($feeCategory) {
+            if ($request->status === 'accept') {
+                // Create or Update Income Transaction
+                \App\Models\Transaction::updateOrCreate(
+                    [
+                        'reference_id'   => $registration->id,
+                        'reference_type' => 'program_registration',
+                    ],
+                    [
+                        'account_category_id' => $feeCategory->id,
+                        'amount'              => $registration->program->registration_fee ?? 0,
+                        'type'                => 'income',
+                        'date'                => now(),
+                        'description'         => "Registration Fee for {$registration->program->title} - ID: {$registration->formatted_id}",
+                    ]
+                );
+            } elseif ($oldStatus === 'accept' && $request->status !== 'accept') {
+                // If it was accepted but now it's not, remove the income record
+                \App\Models\Transaction::where('reference_id', $registration->id)
+                    ->where('reference_type', 'program_registration')
+                    ->delete();
+            }
+        }
+
+        return back()->with('success', 'Registration status updated and finance records adjusted.');
     }
 
     public function exportRegistrations(Program $program) {

@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Transaction extends Model
+{
+    protected $fillable = [
+        'account_category_id',
+        'amount',
+        'type',
+        'date',
+        'description',
+        'reference_id',
+        'reference_type'
+    ];
+
+    protected $casts = [
+        'date' => 'date',
+        'amount' => 'decimal:2',
+    ];
+
+    public function category() {
+        return $this->belongsTo(AccountCategory::class, 'account_category_id');
+    }
+
+    public function scopeIncome($query) {
+        return $query->where('type', 'income');
+    }
+
+    public function scopeExpense($query) {
+        return $query->where('type', 'expense');
+    }
+}

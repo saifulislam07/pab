@@ -1,0 +1,266 @@
+[
+    {
+        "id": 10,
+        "type": "admin",
+        "title": "Dashboard",
+        "position": 0,
+        "parent_id": null,
+        "url": "dashboard"
+    },
+    {
+        "id": 11,
+        "type": "admin",
+        "title": "Sliders",
+        "position": 1,
+        "parent_id": null,
+        "url": "admin\/sliders"
+    },
+    {
+        "id": 32,
+        "type": "admin",
+        "title": "Manage Programs",
+        "position": 1,
+        "parent_id": 31,
+        "url": "admin\/programs"
+    },
+    {
+        "id": 12,
+        "type": "admin",
+        "title": "About Us",
+        "position": 2,
+        "parent_id": null,
+        "url": "admin\/about"
+    },
+    {
+        "id": 13,
+        "type": "admin",
+        "title": "Mission & Vision",
+        "position": 3,
+        "parent_id": null,
+        "url": "admin\/mission-vision"
+    },
+    {
+        "id": 14,
+        "type": "admin",
+        "title": "Gallery Management",
+        "position": 4,
+        "parent_id": null,
+        "url": "admin\/gallery"
+    },
+    {
+        "id": 15,
+        "type": "admin",
+        "title": "Categories",
+        "position": 5,
+        "parent_id": null,
+        "url": "admin\/categories"
+    },
+    {
+        "id": 16,
+        "type": "admin",
+        "title": "Team Management",
+        "position": 6,
+        "parent_id": null,
+        "url": "admin\/team"
+    },
+    {
+        "id": 17,
+        "type": "admin",
+        "title": "Member Approval",
+        "position": 7,
+        "parent_id": null,
+        "url": "admin\/members"
+    },
+    {
+        "id": 18,
+        "type": "admin",
+        "title": "Sponsors",
+        "position": 8,
+        "parent_id": null,
+        "url": "admin\/sponsors"
+    },
+    {
+        "id": 19,
+        "type": "admin",
+        "title": "Events\/News",
+        "position": 9,
+        "parent_id": null,
+        "url": "admin\/events"
+    },
+    {
+        "id": 20,
+        "type": "admin",
+        "title": "Advertisements",
+        "position": 10,
+        "parent_id": null,
+        "url": "admin\/advertisements"
+    },
+    {
+        "id": 21,
+        "type": "admin",
+        "title": "Menu Management",
+        "position": 11,
+        "parent_id": null,
+        "url": "admin\/menus"
+    },
+    {
+        "id": 22,
+        "type": "admin",
+        "title": "User Management",
+        "position": 12,
+        "parent_id": null,
+        "url": "admin\/users"
+    },
+    {
+        "id": 23,
+        "type": "admin",
+        "title": "Roles Management",
+        "position": 13,
+        "parent_id": null,
+        "url": "admin\/roles"
+    },
+    {
+        "id": 24,
+        "type": "admin",
+        "title": "Permissions",
+        "position": 14,
+        "parent_id": null,
+        "url": "admin\/permissions"
+    },
+    {
+        "id": 25,
+        "type": "admin",
+        "title": "Site Settings",
+        "position": 15,
+        "parent_id": null,
+        "url": "admin\/settings"
+    },
+    {
+        "id": 26,
+        "type": "admin",
+        "title": "SMTP Settings",
+        "position": 16,
+        "parent_id": null,
+        "url": "admin.settings.smtp"
+    },
+    {
+        "id": 31,
+        "type": "admin",
+        "title": "Program Setup",
+        "position": 150,
+        "parent_id": null,
+        "url": null
+    },
+    {
+        "id": 1,
+        "type": "frontend",
+        "title": "Home",
+        "position": 0,
+        "parent_id": null,
+        "url": "\/"
+    },
+    {
+        "id": 2,
+        "type": "frontend",
+        "title": "About",
+        "position": 1,
+        "parent_id": null,
+        "url": "\/about"
+    },
+    {
+        "id": 3,
+        "type": "frontend",
+        "title": "Mission & Vision",
+        "position": 2,
+        "parent_id": null,
+        "url": "\/mission-vision"
+    },
+    {
+        "id": 4,
+        "type": "frontend",
+        "title": "Team",
+        "position": 3,
+        "parent_id": null,
+        "url": "\/team"
+    },
+    {
+        "id": 5,
+        "type": "frontend",
+        "title": "Members",
+        "position": 4,
+        "parent_id": null,
+        "url": "\/members"
+    },
+    {
+        "id": 6,
+        "type": "frontend",
+        "title": "Events",
+        "position": 5,
+        "parent_id": null,
+        "url": "\/events"
+    },
+    {
+        "id": 7,
+        "type": "frontend",
+        "title": "Registration",
+        "position": 6,
+        "parent_id": null,
+        "url": "\/register"
+    },
+    {
+        "id": 8,
+        "type": "frontend",
+        "title": "Gallery",
+        "position": 7,
+        "parent_id": null,
+        "url": "\/gallery"
+    },
+    {
+        "id": 9,
+        "type": "frontend",
+        "title": "Contact",
+        "position": 8,
+        "parent_id": null,
+        "url": "\/contact"
+    },
+    {
+        "id": 33,
+        "type": "frontend",
+        "title": "Programs",
+        "position": 50,
+        "parent_id": null,
+        "url": "programs"
+    },
+    {
+        "id": 27,
+        "type": "member",
+        "title": "My Dashboard",
+        "position": 0,
+        "parent_id": null,
+        "url": "member\/dashboard"
+    },
+    {
+        "id": 28,
+        "type": "member",
+        "title": "My Profile",
+        "position": 1,
+        "parent_id": null,
+        "url": "member\/profile\/complete"
+    },
+    {
+        "id": 29,
+        "type": "member",
+        "title": "Events",
+        "position": 2,
+        "parent_id": null,
+        "url": "events"
+    },
+    {
+        "id": 30,
+        "type": "member",
+        "title": "Gallery",
+        "position": 3,
+        "parent_id": null,
+        "url": "gallery"
+    }
+]

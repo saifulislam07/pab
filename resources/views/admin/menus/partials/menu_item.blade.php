@@ -1,7 +1,10 @@
 <li class="dd-item" data-id="{{ $menu->id }}">
-    <div class="dd-handle">
+    <div class="dd-handle {{ !$menu->is_active ? 'text-muted' : '' }}">
         @if($menu->icon) <i class="{{ $menu->icon }} mr-1"></i> @endif
         <span class="text-bold">{{ $menu->title }}</span>
+        @if(!$menu->is_active)
+            <span class="badge badge-warning ml-1 text-xs">Hidden</span>
+        @endif
         <span class="text-muted ml-2 text-xs">({{ $menu->url ?: '#' }})</span>
     </div>
     

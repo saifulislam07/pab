@@ -48,18 +48,8 @@ Route::middleware(['auth', 'verified', 'profile.complete'])->group(function () {
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
-    // Admin Dashboard (Internal name for redirection)
-    Route::get('/admin/dashboard', function () {
-        $stats = [
-            'total_members'   => \App\Models\Member::where('status', 'approved')->count(),
-            'pending_members' => \App\Models\Member::where('status', 'pending')->count(),
-            'total_events'    => \App\Models\Event::count(),
-            'total_gallery'   => \App\Models\GalleryItem::count(),
-            'total_sponsors'  => \App\Models\Sponsor::count(),
-            'total_earnings'  => \App\Models\Earning::sum('amount'),
-        ];
-        return view('dashboard', compact('stats'));
-    })->name('admin.dashboard');
+    // Admin Dashboard
+    Route::get('/admin/dashboard', [App\Http\Controllers\Admin\AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
     // Admin Profile
     Route::get('/admin/profile', [App\Http\Controllers\Admin\AdminProfileController::class, 'edit'])->name('admin.profile.edit');
@@ -121,6 +111,21 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('admin/users', App\Http\Controllers\Admin\UserController::class)->names('admin.users')->only(['index', 'update', 'destroy']);
     Route::resource('admin/roles', App\Http\Controllers\Admin\RoleController::class)->names('admin.roles');
     Route::resource('admin/permissions', App\Http\Controllers\Admin\PermissionController::class)->names('admin.permissions')->only(['index', 'store', 'destroy']);
+
+    // Financial Management
+    Route::controller(App\Http\Controllers\Admin\FinancialController::class)->group(function () {
+        Route::get('admin/finance/categories', 'categories')->name('admin.finance.categories');
+        Route::post('admin/finance/categories', 'storeCategory')->name('admin.finance.categories.store');
+        Route::put('admin/finance/categories/{category}', 'updateCategory')->name('admin.finance.categories.update');
+        Route::delete('admin/finance/categories/{category}', 'destroyCategory')->name('admin.finance.categories.destroy');
+
+        Route::get('admin/finance/income', 'income')->name('admin.finance.income');
+        Route::get('admin/finance/expense', 'expense')->name('admin.finance.expense');
+        Route::get('admin/finance/report', 'report')->name('admin.finance.report');
+        Route::post('admin/finance/transaction', 'storeTransaction')->name('admin.finance.transaction.store');
+        Route::put('admin/finance/transaction/{transaction}', 'updateTransaction')->name('admin.finance.transaction.update');
+        Route::delete('admin/finance/transaction/{transaction}', 'destroyTransaction')->name('admin.finance.transaction.destroy');
+    });
 
     // Membership Management for Admins
     Route::get('admin/membership', [App\Http\Controllers\Admin\MembershipController::class, 'index'])->name('admin.membership.index');
