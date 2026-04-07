@@ -31,12 +31,16 @@ class ProgramRegistration extends Model {
 
     public function getField($name) {
         if (!$this->registration_data) return null;
-        
+        return self::extractField($this->registration_data, $name);
+    }
+
+    public static function extractField(array $data, $name) {
         $searchKey = str_replace([' ', '-', '.'], '_', strtolower($name));
         $aliases = [
             'trans_id' => ['transaction', 'trx', 'ট্রানজ্যাকশন', 'ট্রানজেকশন'],
-            'mobile'   => ['phone', 'contact', 'মোবাইল', 'ফোন'],
-            'name'     => ['full_name', 'username', 'নাম'],
+            'mobile'   => ['phone', 'contact', 'মোবাইল', 'ফোন', 'number'],
+            'name'     => ['full_name', 'username', 'নাম', 'applicant'],
+            'email'    => ['mail', 'e-mail', 'ইমেইল', 'ই-মেইল'],
             'amount'   => ['fee', 'payment', 'টাকা', 'ফি', 'আমাউন্ট'],
             'note'     => ['comment', 'remark', 'payment_method', 'মোবাইল_ব্যাংকিং_মাধম', 'note'],
             'form_no'  => ['form_number', 'form', 'number', 'সিরিয়াল', 'রেফারেন্স', 'নং']
@@ -44,7 +48,7 @@ class ProgramRegistration extends Model {
 
         $searchTerms = array_merge([$searchKey], $aliases[$searchKey] ?? []);
         
-        foreach ($this->registration_data as $key => $value) {
+        foreach ($data as $key => $value) {
             $normalizedKey = str_replace([' ', '-', '.'], '_', strtolower($key));
             foreach ($searchTerms as $term) {
                 if ($normalizedKey === $term || str_contains($normalizedKey, $term) || str_contains($term, $normalizedKey)) {

@@ -3,6 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Str;
+use App\Models\User;
+use App\Models\Member;
+use App\Models\ProgramRegistration;
+use App\Mail\MemberAutoRegisteredMail;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class FrontendController extends Controller {
     public function index() {
@@ -215,6 +223,68 @@ class FrontendController extends Controller {
 
         $validatedData = $request->validate($rules, $messages);
 
+        // Extract Name, Email, and Mobile for auto-registration
+        $regName = ProgramRegistration::extractField($validatedData, 'name') ?? 'Guest User';
+        $regEmail = ProgramRegistration::extractField($validatedData, 'email');
+        $regMobile = ProgramRegistration::extractField($validatedData, 'mobile');
+
+        $userId = auth()->id();
+
+        // Auto-registration logic if not logged in
+        if (!$userId && ($regEmail || $regMobile)) {
+            // Check if user exists by email
+            $existingUser = null;
+            if ($regEmail) {
+                $existingUser = User::where('email', $regEmail)->first();
+            }
+
+            // Check if member exists by mobile
+            if (!$existingUser && $regMobile) {
+                $existingMember = Member::where('mobile', $regMobile)->first();
+                if ($existingMember) {
+                    $existingUser = User::find($existingMember->user_id);
+                }
+            }
+
+            if ($existingUser) {
+                $userId = $existingUser->id;
+            } else {
+                // Create new user
+                $password = $regMobile ?? Str::random(10);
+                $newUser = User::create([
+                    'name'     => $regName,
+                    'email'    => $regEmail ?? ($regMobile . '@pab.org.bd'), // Fallback if no email
+                    'password' => Hash::make($password),
+                    'role'     => 'member',
+                ]);
+
+                $newUser->assignRole('member');
+
+                Member::create([
+                    'user_id' => $newUser->id,
+                    'name'    => $newUser->name,
+                    'email'   => $newUser->email,
+                    'mobile'  => $regMobile,
+                    'role'    => 'Standard Member',
+                    'status'  => 'pending',
+                ]);
+
+                $userId = $newUser->id;
+
+                // Send email if email is provided
+                if ($regEmail) {
+                    try {
+                        Mail::to($regEmail)->send(new MemberAutoRegisteredMail($newUser, $password));
+                    } catch (\Exception $e) {
+                        \Log::error('Auto-registration mail failed: ' . $e->getMessage());
+                    }
+                }
+
+                // Log the user in
+                Auth::login($newUser);
+            }
+        }
+
         // Handle file uploads
         if ($program->registration_fields) {
             foreach ($program->registration_fields as $field) {
@@ -241,9 +311,9 @@ class FrontendController extends Controller {
             }
         }
 
-        \App\Models\ProgramRegistration::create([
+        ProgramRegistration::create([
             'program_id'        => $program->id,
-            'user_id'           => auth()->id(),
+            'user_id'           => $userId,
             'registration_data' => $validatedData,
             'status'            => 'pending',
             'payment_status'    => $program->registration_fee > 0 ? 'unpaid' : 'paid',

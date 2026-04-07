@@ -187,6 +187,14 @@ class ProgramController extends Controller {
             }
         }
 
+        // Auto-Approve Member status if registration is accepted
+        if ($request->status === 'accept' && $registration->user_id) {
+            $member = \App\Models\Member::where('user_id', $registration->user_id)->first();
+            if ($member && ($member->status === 'pending' || $member->status === 'rejected')) {
+                $member->update(['status' => 'approved']);
+            }
+        }
+
         return back()->with('success', 'Registration status updated and finance records adjusted.');
     }
 
