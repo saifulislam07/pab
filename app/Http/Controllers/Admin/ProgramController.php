@@ -124,12 +124,48 @@ class ProgramController extends Controller {
     }
 
     public function destroy(Program $program) {
-        if ($program->image && file_exists(public_path('programe/' . $program->image))) {
-            unlink(public_path('programe/' . $program->image));
+        if ($program->registrations()->count() > 0) {
+            return redirect()->back()->with('error', 'Cannot delete program with associated registrations.');
         }
+
+        if ($program->image && ! str_starts_with($program->image, 'http')) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($program->image);
+        }
+
         $program->delete();
 
         return redirect()->route('admin.programs.index')->with('success', 'Program deleted successfully.');
+    }
+
+    public function bulkDestroy(Request $request) {
+        $ids = json_decode($request->ids);
+        if (! $ids || ! is_array($ids)) {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+
+        $programs = Program::whereIn('id', $ids)->get();
+        $deletedCount = 0;
+        $skippedCount = 0;
+
+        foreach ($programs as $program) {
+            if ($program->registrations()->count() > 0) {
+                $skippedCount++;
+                continue;
+            }
+
+            if ($program->image && ! str_starts_with($program->image, 'http')) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($program->image);
+            }
+            $program->delete();
+            $deletedCount++;
+        }
+
+        $message = "{$deletedCount} programs deleted successfully.";
+        if ($skippedCount > 0) {
+            $message .= " {$skippedCount} programs skipped because they have active registrations.";
+        }
+
+        return redirect()->route('admin.programs.index')->with($skippedCount > 0 ? 'warning' : 'success', $message);
     }
 
     public function registrations(Program $program, Request $request) {

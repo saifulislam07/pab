@@ -20,6 +20,16 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css">
     
     @yield('styles')
+    <style>
+        .required-label::after {
+            content: " *";
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .text-sm {
+            font-size: 0.875rem;
+        }
+    </style>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -75,12 +85,45 @@
 <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 <!-- Select2 -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-    $(document).ready(function() {
-        $('.select2').select2({
-            theme: 'bootstrap4'
+        $(document).ready(function() {
+            $('.select2').select2({
+                theme: 'bootstrap4'
+            });
+
+            // Global Delete Confirmation
+            $(document).on('submit', 'form', function(e) {
+                const form = this;
+                const deleteInput = $(form).find('input[name="_method"][value="DELETE"]');
+                const hasConfirm = $(form).attr('onsubmit') && $(form).attr('onsubmit').includes('confirm');
+                
+                if ((deleteInput.length > 0 || hasConfirm) && !form.dataset.swalConfirmed) {
+                    e.preventDefault();
+                    
+                    // If it had an inline confirm, remove it to prevent double triggering on next submit
+                    if (hasConfirm) $(form).removeAttr('onsubmit');
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "This action cannot be undone!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.dataset.swalConfirmed = "true";
+                            form.submit();
+                        }
+                    });
+                }
+            });
         });
-    });
 </script>
 
 @yield('scripts')

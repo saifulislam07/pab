@@ -58,8 +58,38 @@ class MenuController extends Controller {
     }
 
     public function destroy(Menu $menu) {
+        if ($menu->children()->count() > 0) {
+            return redirect()->back()->with('error', 'Cannot delete menu item that has children.');
+        }
         $menu->delete();
         return redirect()->back()->with('success', 'Menu item deleted successfully.');
+    }
+
+    public function bulkDestroy(Request $request) {
+        $ids = json_decode($request->ids);
+        if (! $ids || ! is_array($ids)) {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+
+        $menus = Menu::whereIn('id', $ids)->get();
+        $deletedCount = 0;
+        $skippedCount = 0;
+
+        foreach ($menus as $menu) {
+            if ($menu->children()->count() > 0) {
+                $skippedCount++;
+                continue;
+            }
+            $menu->delete();
+            $deletedCount++;
+        }
+
+        $message = "{$deletedCount} menu items deleted successfully.";
+        if ($skippedCount > 0) {
+            $message .= " {$skippedCount} items skipped because they have children.";
+        }
+
+        return redirect()->back()->with($skippedCount > 0 ? 'warning' : 'success', $message);
     }
 
     public function reorder(Request $request) {

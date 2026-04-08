@@ -76,4 +76,21 @@ class SliderController extends Controller {
 
         return redirect()->route('admin.sliders.index')->with('success', 'Slider deleted successfully.');
     }
+
+    public function bulkDestroy(Request $request) {
+        $ids = json_decode($request->ids);
+        if (! $ids || ! is_array($ids)) {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+
+        $sliders = Slider::whereIn('id', $ids)->get();
+        foreach ($sliders as $slider) {
+            if ($slider->image && ! Str::startsWith($slider->image, 'http')) {
+                Storage::disk('public')->delete($slider->image);
+            }
+            $slider->delete();
+        }
+
+        return redirect()->route('admin.sliders.index')->with('success', count($sliders) . ' sliders deleted successfully.');
+    }
 }

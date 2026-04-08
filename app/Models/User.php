@@ -36,6 +36,10 @@ class User extends Authenticatable {
         return $this->hasOne(Member::class);
     }
 
+    public function programRegistrations() {
+        return $this->hasMany(ProgramRegistration::class);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

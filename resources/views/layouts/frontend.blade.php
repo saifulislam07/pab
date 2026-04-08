@@ -86,7 +86,7 @@
                                          x-transition:leave-end="opacity-0 scale-95"
                                          class="absolute left-0 mt-0 w-48 bg-gray-800 rounded-md shadow-lg py-1 border border-gray-700 z-50">
                                         @foreach($menu->children as $child)
-                                            <a href="{{ $child->url ? (Str::startsWith($child->url, 'http') ? $child->url : url($child->url)) : '#' }}" 
+                                            <a href="{{ $child->url ? (Route::has($child->url) ? route($child->url) : (Str::startsWith($child->url, 'http') ? $child->url : url($child->url))) : '#' }}" 
                                                target="{{ $child->target }}"
                                                class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition">
                                                 {{ $child->title }}
@@ -95,10 +95,10 @@
                                     </div>
                                 </div>
                             @else
-                                <a href="{{ $menu->url ? (Str::startsWith($menu->url, 'http') ? $menu->url : url($menu->url)) : '#' }}" 
+                                <a href="{{ $menu->url ? (Route::has($menu->url) ? route($menu->url) : (Str::startsWith($menu->url, 'http') ? $menu->url : url($menu->url))) : '#' }}" 
                                    target="{{ $menu->target }}"
                                    class="inline-flex items-center px-3 py-2 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out
-                                          {{ Request::is(trim($menu->url, '/')) || Request::url() == $menu->url
+                                          {{ (Route::has($menu->url) ? request()->routeIs($menu->url) : request()->is(trim($menu->url, '/') . '*'))
                                              ? 'border-red-500 text-white' 
                                              : 'border-transparent text-gray-300 hover:text-white hover:border-gray-300' }}">
                                     {{ $menu->title }}
@@ -137,7 +137,7 @@
                                 </button>
                                 <div x-show="subOpen" class="bg-gray-800/50 pl-6">
                                     @foreach($menu->children as $child)
-                                        <a href="{{ $child->url ? (Str::startsWith($child->url, 'http') ? $child->url : url($child->url)) : '#' }}" 
+                                        <a href="{{ $child->url ? (Route::has($child->url) ? route($child->url) : (Str::startsWith($child->url, 'http') ? $child->url : url($child->url))) : '#' }}" 
                                            target="{{ $child->target }}"
                                            class="block py-2 text-sm font-medium text-gray-400 hover:text-white transition">
                                             {{ $child->title }}
@@ -146,10 +146,10 @@
                                 </div>
                             </div>
                         @else
-                            <a href="{{ $menu->url ? (Str::startsWith($menu->url, 'http') ? $menu->url : url($menu->url)) : '#' }}" 
+                            <a href="{{ $menu->url ? (Route::has($menu->url) ? route($menu->url) : (Str::startsWith($menu->url, 'http') ? $menu->url : url($menu->url))) : '#' }}" 
                                target="{{ $menu->target }}"
                                class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition duration-150 ease-in-out
-                                      {{ Request::is(trim($menu->url, '/')) || Request::url() == $menu->url
+                                      {{ (Route::has($menu->url) ? request()->routeIs($menu->url) : request()->is(trim($menu->url, '/') . '*'))
                                          ? 'border-red-500 text-white bg-gray-800' 
                                          : 'border-transparent text-gray-400 hover:text-white hover:bg-gray-800 hover:border-gray-300' }}">
                                 {{ $menu->title }}

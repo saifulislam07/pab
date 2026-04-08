@@ -2,16 +2,13 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class AccountCategorySeeder extends Seeder
-{
+class AccountCategorySeeder extends Seeder {
     /**
      * Run the database seeds.
      */
-    public function run(): void
-    {
+    public function run(): void {
         $categories = [
             ['name' => 'Program Registration Fee', 'type' => 'income', 'icon' => 'fas fa-id-badge'],
             ['name' => 'General Donation', 'type' => 'income', 'icon' => 'fas fa-hand-holding-usd'],

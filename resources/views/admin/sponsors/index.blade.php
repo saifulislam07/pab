@@ -1,10 +1,39 @@
 @extends('layouts.admin')
 
-@section('title', 'Sponsors Management')
-@section('page_title', 'Sponsors Management')
+@section('title', 'Sponsors')
+@section('page_title', 'Sponsor Management')
 
 @section('content')
 <div class="row">
+    <div class="col-12">
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
+        @if(session('warning'))
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {{ session('warning') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+    </div>
+
     <div class="col-12 mb-4">
         <div class="card card-outline card-info">
             <div class="card-header">
@@ -42,12 +71,16 @@
             <div class="card-header">
                 <h3 class="card-title">Sponsors List</h3>
                 <div class="card-tools d-flex align-items-center">
+                    <button id="bulkDeleteBtn" class="btn btn-danger btn-sm mr-2 d-none">
+                        <i class="fas fa-trash"></i> Delete Selected
+                    </button>
+                    
                     @include('admin.partials.search', [
                         'route' => route('admin.sponsors.index'),
                         'placeholder' => 'Search name...',
                         'clearRoute' => route('admin.sponsors.index')
                     ])
-                    <a href="{{ route('admin.sponsors.create') }}" class="btn btn-primary btn-sm">
+                    <a href="{{ route('admin.sponsors.create') }}" class="btn btn-primary btn-sm ml-2">
                         <i class="fas fa-plus"></i> Add Sponsor
                     </a>
                 </div>
@@ -56,6 +89,12 @@
                 <table class="table table-hover text-nowrap">
                     <thead>
                         <tr>
+                            <th style="width: 40px">
+                                <div class="custom-control custom-checkbox">
+                                    <input class="custom-control-input" type="checkbox" id="selectAll">
+                                    <label for="selectAll" class="custom-control-label"></label>
+                                </div>
+                            </th>
                             <th>Order</th>
                             <th>Logo</th>
                             <th>Name</th>
@@ -67,6 +106,12 @@
                     <tbody>
                         @foreach($sponsors as $sponsor)
                         <tr>
+                            <td class="align-middle">
+                                <div class="custom-control custom-checkbox">
+                                    <input class="custom-control-input bulk-checkbox" type="checkbox" id="checkbox-{{ $sponsor->id }}" value="{{ $sponsor->id }}">
+                                    <label for="checkbox-{{ $sponsor->id }}" class="custom-control-label"></label>
+                                </div>
+                            </td>
                             <td class="align-middle">{{ $sponsor->order }}</td>
                             <td>
                                 <img src="{{ \Illuminate\Support\Str::startsWith($sponsor->logo, 'http') ? $sponsor->logo : asset('storage/' . $sponsor->logo) }}" width="80" class="img-thumbnail rounded shadow-sm bg-light">
@@ -94,6 +139,12 @@
                         @endforeach
                     </tbody>
                 </table>
+
+                <!-- Bulk Delete Form -->
+                <form id="bulkDeleteForm" action="{{ route('admin.sponsors.bulk-destroy') }}" method="POST" style="display: none;">
+                    @csrf
+                    <input type="hidden" name="ids" id="selectedIds">
+                </form>
             </div>
             <div class="card-footer clearfix">
                 <div class="float-right">
@@ -103,4 +154,8 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script src="{{ asset('js/admin-bulk-delete.js') }}"></script>
 @endsection

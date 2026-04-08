@@ -26,6 +26,37 @@
 @endsection
 
 @section('content')
+<div class="row">
+    <div class="col-12">
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
+        @if(session('warning'))
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {{ session('warning') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+    </div>
+</div>
+
 <div class="row mb-3">
     <div class="col-12">
         <ul class="nav nav-tabs">
@@ -46,11 +77,17 @@
 <div class="row">
     <div class="col-md-7">
         <div class="card card-primary card-outline">
-            <div class="card-header">
-                <h3 class="card-title">
-                    {{ ucfirst($type) }} Menu Structure
-                </h3>
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <div class="custom-control custom-checkbox mr-3">
+                        <input class="custom-control-input" type="checkbox" id="selectAll">
+                        <label for="selectAll" class="custom-control-label">Select All</label>
+                    </div>
+                </div>
                 <div class="card-tools">
+                    <button id="bulkDeleteBtn" class="btn btn-danger btn-sm d-none mr-2">
+                        <i class="fas fa-trash"></i> Delete Selected
+                    </button>
                     <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addMenuModal">
                         <i class="fas fa-plus"></i> Add {{ ucfirst($type) }} Item
                     </button>
@@ -70,6 +107,12 @@
                         No {{ $type }} menu items found. Click add to start!
                     </div>
                 @endif
+
+                <!-- Bulk Delete Form -->
+                <form id="bulkDeleteForm" action="{{ route('admin.menus.bulk-destroy') }}" method="POST" style="display: none;">
+                    @csrf
+                    <input type="hidden" name="ids" id="selectedIds">
+                </form>
             </div>
             <div class="card-footer">
                 <button type="button" class="btn btn-primary" id="save-order">
@@ -90,6 +133,7 @@
                     <li>Nesting is supported up to 2 levels deep.</li>
                     <li>For <strong>Admin Sidebar</strong> items, make sure to provide a FontAwesome icon (e.g., <code>fas fa-tachometer-alt</code>).</li>
                     <li>Click <strong>Save Order</strong> after reordering to apply changes.</li>
+                    <li class="text-danger">Important: Menu items with sub-menus (children) cannot be deleted until their children are removed or moved.</li>
                 </ul>
             </div>
         </div>
@@ -162,6 +206,7 @@
 
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Nestable/2012-10-15/jquery.nestable.min.js"></script>
+<script src="{{ asset('js/admin-bulk-delete.js') }}"></script>
 <script>
     $(document).ready(function() {
         $('#nestable').nestable({

@@ -61,4 +61,31 @@ class CategoryController extends Controller {
 
         return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully.');
     }
+
+    public function bulkDestroy(Request $request) {
+        $ids = json_decode($request->ids);
+        if (! $ids || ! is_array($ids)) {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+
+        $categories = Category::whereIn('id', $ids)->get();
+        $deletedCount = 0;
+        $skippedCount = 0;
+
+        foreach ($categories as $category) {
+            if ($category->items()->count() > 0) {
+                $skippedCount++;
+                continue;
+            }
+            $category->delete();
+            $deletedCount++;
+        }
+
+        $message = "{$deletedCount} categories deleted successfully.";
+        if ($skippedCount > 0) {
+            $message .= " {$skippedCount} categories skipped because they have associated gallery items.";
+        }
+
+        return redirect()->route('admin.categories.index')->with($skippedCount > 0 ? 'warning' : 'success', $message);
+    }
 }

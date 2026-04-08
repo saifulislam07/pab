@@ -69,6 +69,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/sliders', [App\Http\Controllers\Admin\SliderController::class, 'store'])->name('admin.sliders.store');
     Route::get('/admin/sliders/{slider}/edit', [App\Http\Controllers\Admin\SliderController::class, 'edit'])->name('admin.sliders.edit');
     Route::put('/admin/sliders/{slider}', [App\Http\Controllers\Admin\SliderController::class, 'update'])->name('admin.sliders.update');
+    Route::post('/admin/sliders/bulk-destroy', [App\Http\Controllers\Admin\SliderController::class, 'bulkDestroy'])->name('admin.sliders.bulk-destroy');
     Route::delete('/admin/sliders/{slider}', [App\Http\Controllers\Admin\SliderController::class, 'destroy'])->name('admin.sliders.destroy');
 
     Route::get('/admin/mission-vision', [App\Http\Controllers\Admin\MissionVisionController::class, 'edit'])->name('admin.mission-vision.edit');
@@ -76,21 +77,27 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('admin/gallery/batch', [App\Http\Controllers\Admin\GalleryController::class, 'batchCreate'])->name('admin.gallery.batch');
     Route::post('admin/gallery/batch', [App\Http\Controllers\Admin\GalleryController::class, 'batchStore'])->name('admin.gallery.batch.store');
+    Route::post('admin/gallery/bulk-destroy', [App\Http\Controllers\Admin\GalleryController::class, 'bulkDestroy'])->name('admin.gallery.bulk-destroy');
     Route::resource('admin/gallery', App\Http\Controllers\Admin\GalleryController::class)->names('admin.gallery');
+    Route::post('admin/categories/bulk-destroy', [App\Http\Controllers\Admin\CategoryController::class, 'bulkDestroy'])->name('admin.categories.bulk-destroy');
     Route::resource('admin/categories', App\Http\Controllers\Admin\CategoryController::class)->names('admin.categories');
 
     // New routes for Team and Members
+    Route::post('admin/team/bulk-destroy', [App\Http\Controllers\Admin\TeamMemberController::class, 'bulkDestroy'])->name('admin.team.bulk-destroy');
     Route::resource('admin/team', App\Http\Controllers\Admin\TeamMemberController::class)->names('admin.team');
     Route::get('admin/members/export', [App\Http\Controllers\Admin\MemberController::class, 'exportCsv'])->name('admin.members.export');
     Route::get('admin/members', [App\Http\Controllers\Admin\MemberController::class, 'index'])->name('admin.members.index');
     Route::get('admin/members/{member}', [App\Http\Controllers\Admin\MemberController::class, 'show'])->name('admin.members.show');
     Route::patch('admin/members/{member}/status', [App\Http\Controllers\Admin\MemberController::class, 'updateStatus'])->name('admin.members.update-status');
     Route::put('admin/members/{member}/password', [App\Http\Controllers\Admin\MemberController::class, 'updatePassword'])->name('admin.members.update-password');
+    Route::post('admin/members/bulk-destroy', [App\Http\Controllers\Admin\MemberController::class, 'bulkDestroy'])->name('admin.members.bulk-destroy');
     Route::delete('admin/members/{member}', [App\Http\Controllers\Admin\MemberController::class, 'destroy'])->name('admin.members.destroy');
 
     // Sponsor & Event Routes
+    Route::post('admin/sponsors/bulk-destroy', [App\Http\Controllers\Admin\SponsorController::class, 'bulkDestroy'])->name('admin.sponsors.bulk-destroy');
     Route::resource('admin/sponsors', App\Http\Controllers\Admin\SponsorController::class)->names('admin.sponsors');
     Route::post('admin/sponsors/settings', [App\Http\Controllers\Admin\SponsorController::class, 'updateSettings'])->name('admin.sponsors.update-settings');
+    Route::post('admin/events/bulk-destroy', [App\Http\Controllers\Admin\EventController::class, 'bulkDestroy'])->name('admin.events.bulk-destroy');
     Route::resource('admin/events', App\Http\Controllers\Admin\EventController::class)->names('admin.events');
 
     // Program Routes
@@ -98,16 +105,20 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('admin/programs/{program}/registrations/export', [App\Http\Controllers\Admin\ProgramController::class, 'exportRegistrations'])->name('admin.programs.registrations.export');
     Route::patch('admin/programs/registrations/{registration}/status', [App\Http\Controllers\Admin\ProgramController::class, 'updateRegistrationStatus'])->name('admin.programs.registrations.status');
     Route::get('admin/programs/registrations/{registration}', [App\Http\Controllers\Admin\ProgramController::class, 'showRegistration'])->name('admin.programs.registrations.show');
+    Route::post('admin/programs/bulk-destroy', [App\Http\Controllers\Admin\ProgramController::class, 'bulkDestroy'])->name('admin.programs.bulk-destroy');
     Route::resource('admin/programs', App\Http\Controllers\Admin\ProgramController::class)->names('admin.programs');
 
     // Advertisements
+    Route::post('admin/advertisements/bulk-destroy', [App\Http\Controllers\Admin\AdvertisementController::class, 'bulkDestroy'])->name('admin.advertisements.bulk-destroy');
     Route::resource('admin/advertisements', App\Http\Controllers\Admin\AdvertisementController::class)->names('admin.advertisements');
 
     // Menus
+    Route::post('admin/menus/bulk-destroy', [App\Http\Controllers\Admin\MenuController::class, 'bulkDestroy'])->name('admin.menus.bulk-destroy');
     Route::resource('admin/menus', App\Http\Controllers\Admin\MenuController::class)->names('admin.menus');
     Route::post('admin/menus/reorder', [App\Http\Controllers\Admin\MenuController::class, 'reorder'])->name('admin.menus.reorder');
 
     // User & RBAC Management
+    Route::post('admin/users/bulk-destroy', [App\Http\Controllers\Admin\UserController::class, 'bulkDestroy'])->name('admin.users.bulk-destroy');
     Route::resource('admin/users', App\Http\Controllers\Admin\UserController::class)->names('admin.users')->only(['index', 'update', 'destroy']);
     Route::resource('admin/roles', App\Http\Controllers\Admin\RoleController::class)->names('admin.roles');
     Route::resource('admin/permissions', App\Http\Controllers\Admin\PermissionController::class)->names('admin.permissions')->only(['index', 'store', 'destroy']);
@@ -118,6 +129,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::post('admin/finance/categories', 'storeCategory')->name('admin.finance.categories.store');
         Route::put('admin/finance/categories/{category}', 'updateCategory')->name('admin.finance.categories.update');
         Route::delete('admin/finance/categories/{category}', 'destroyCategory')->name('admin.finance.categories.destroy');
+        Route::post('admin/finance/categories/bulk-destroy', 'bulkDestroyCategory')->name('admin.finance.categories.bulk-destroy');
 
         Route::get('admin/finance/income', 'income')->name('admin.finance.income');
         Route::get('admin/finance/expense', 'expense')->name('admin.finance.expense');
@@ -125,6 +137,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::post('admin/finance/transaction', 'storeTransaction')->name('admin.finance.transaction.store');
         Route::put('admin/finance/transaction/{transaction}', 'updateTransaction')->name('admin.finance.transaction.update');
         Route::delete('admin/finance/transaction/{transaction}', 'destroyTransaction')->name('admin.finance.transaction.destroy');
+        Route::post('admin/finance/transaction/bulk-destroy', 'bulkDestroyTransaction')->name('admin.finance.transaction.bulk-destroy');
     });
 
     // Membership Management for Admins

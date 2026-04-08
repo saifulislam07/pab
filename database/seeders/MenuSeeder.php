@@ -6,62 +6,171 @@ use App\Models\Menu;
 use Illuminate\Database\Seeder;
 
 class MenuSeeder extends Seeder {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void {
-        // Frontend Menus
+        // Clear existing menus
+        Menu::truncate();
+
+        // --- FRONTEND MENUS ---
         $frontendMenus = [
-            ['title' => 'Home', 'url' => '/', 'position' => 0, 'type' => 'frontend'],
-            ['title' => 'About', 'url' => '/about', 'position' => 1, 'type' => 'frontend'],
-            ['title' => 'Mission & Vision', 'url' => '/mission-vision', 'position' => 2, 'type' => 'frontend'],
-            ['title' => 'Team', 'url' => '/team', 'position' => 3, 'type' => 'frontend'],
-            ['title' => 'Members', 'url' => '/members', 'position' => 4, 'type' => 'frontend'],
-            ['title' => 'Events', 'url' => '/events', 'position' => 5, 'type' => 'frontend'],
-            ['title' => 'Registration', 'url' => '/register', 'position' => 6, 'type' => 'frontend'],
-            ['title' => 'Gallery', 'url' => '/gallery', 'position' => 7, 'type' => 'frontend'],
-            ['title' => 'Contact', 'url' => '/contact', 'position' => 8, 'type' => 'frontend'],
+            ['title' => 'Home', 'url' => 'home', 'icon' => 'fas fa-home'],
+            ['title' => 'About', 'url' => 'about', 'icon' => 'fas fa-info-circle'],
+            ['title' => 'Events', 'url' => 'events.index', 'icon' => 'fas fa-calendar-alt'],
+            ['title' => 'Programs', 'url' => 'programs.index', 'icon' => 'fas fa-tasks'],
+            ['title' => 'Gallery', 'url' => 'gallery', 'icon' => 'fas fa-images'],
+            ['title' => 'Contact', 'url' => 'contact', 'icon' => 'fas fa-envelope'],
         ];
 
-        foreach ($frontendMenus as $menu) {
-            Menu::updateOrCreate(['title' => $menu['title'], 'type' => 'frontend'], $menu);
+        foreach ($frontendMenus as $index => $item) {
+            Menu::create([
+                'title'     => $item['title'],
+                'url'       => $item['url'],
+                'icon'      => $item['icon'],
+                'type'      => 'frontend',
+                'target'    => '_self',
+                'position'  => $index,
+                'is_active' => true,
+            ]);
         }
 
-        // Admin Sidebar Menus
-        $adminMenus = [
-            ['title' => 'Dashboard', 'url' => 'dashboard', 'icon' => 'fas fa-tachometer-alt', 'position' => 0, 'type' => 'admin'],
-            ['title' => 'Sliders', 'url' => 'admin/sliders', 'icon' => 'fas fa-images', 'position' => 1, 'type' => 'admin'],
-            ['title' => 'About Us', 'url' => 'admin/about', 'icon' => 'fas fa-info-circle', 'position' => 2, 'type' => 'admin'],
-            ['title' => 'Mission & Vision', 'url' => 'admin/mission-vision', 'icon' => 'fas fa-bullseye', 'position' => 3, 'type' => 'admin'],
-            ['title' => 'Gallery Management', 'url' => 'admin/gallery', 'icon' => 'far fa-image', 'position' => 4, 'type' => 'admin'],
-            ['title' => 'Categories', 'url' => 'admin/categories', 'icon' => 'fas fa-list', 'position' => 5, 'type' => 'admin'],
-            ['title' => 'Team Management', 'url' => 'admin/team', 'icon' => 'fas fa-users', 'position' => 6, 'type' => 'admin'],
-            ['title' => 'Member Approval', 'url' => 'admin/members', 'icon' => 'fas fa-user-check', 'position' => 7, 'type' => 'admin'],
-            ['title' => 'Sponsors', 'url' => 'admin/sponsors', 'icon' => 'fas fa-handshake', 'position' => 8, 'type' => 'admin'],
-            ['title' => 'Events/News', 'url' => 'admin/events', 'icon' => 'fas fa-calendar-alt', 'position' => 9, 'type' => 'admin'],
-            ['title' => 'Advertisements', 'url' => 'admin/advertisements', 'icon' => 'fas fa-ad', 'position' => 10, 'type' => 'admin'],
-            ['title' => 'Menu Management', 'url' => 'admin/menus', 'icon' => 'fas fa-bars', 'position' => 11, 'type' => 'admin'],
-            ['title' => 'User Management', 'url' => 'admin/users', 'icon' => 'fas fa-user-shield', 'position' => 12, 'type' => 'admin'],
-            ['title' => 'Roles Management', 'url' => 'admin/roles', 'icon' => 'fas fa-user-tag', 'position' => 13, 'type' => 'admin'],
-            ['title' => 'Permissions', 'url' => 'admin/permissions', 'icon' => 'fas fa-key', 'position' => 14, 'type' => 'admin'],
-            ['title' => 'Site Settings', 'url' => 'admin/settings', 'icon' => 'fas fa-cog', 'position' => 15, 'type' => 'admin'],
-            ['title' => 'SMTP Settings', 'url' => 'admin.settings.smtp', 'icon' => 'fas fa-envelope', 'position' => 16, 'type' => 'admin'],
+        // --- ADMIN SIDEBAR MENUS ---
+        
+        // 1. Dashboard (Standalone)
+        Menu::create([
+            'title'     => 'Dashboard',
+            'url'       => 'admin.dashboard',
+            'icon'      => 'fas fa-tachometer-alt',
+            'type'      => 'admin',
+            'target'    => '_self',
+            'position'  => 0,
+            'is_active' => true,
+        ]);
+
+        // 2. User Management (Group)
+        $userMgmt = Menu::create([
+            'title'     => 'User Management',
+            'url'       => null,
+            'icon'      => 'fas fa-users-cog',
+            'type'      => 'admin',
+            'target'    => '_self',
+            'position'  => 1,
+            'is_active' => true,
+        ]);
+
+        $userMgmtItems = [
+            ['title' => 'Users', 'url' => 'admin.users.index', 'icon' => 'fas fa-user'],
+            ['title' => 'Roles', 'url' => 'admin.roles.index', 'icon' => 'fas fa-user-tag'],
+            ['title' => 'Permissions', 'url' => 'admin.permissions.index', 'icon' => 'fas fa-key'],
+            ['title' => 'All Members', 'url' => 'admin.members.index', 'icon' => 'fas fa-id-card'],
+            ['title' => 'Pending Approval', 'url' => 'admin.membership.index', 'icon' => 'fas fa-user-clock'],
         ];
 
-        foreach ($adminMenus as $menu) {
-            Menu::updateOrCreate(['title' => $menu['title'], 'type' => 'admin'], $menu);
+        foreach ($userMgmtItems as $index => $item) {
+            Menu::create([
+                'title'     => $item['title'],
+                'url'       => $item['url'],
+                'icon'      => $item['icon'],
+                'parent_id' => $userMgmt->id,
+                'type'      => 'admin',
+                'target'    => '_self',
+                'position'  => $index,
+                'is_active' => true,
+            ]);
         }
 
-        // Member Menus
-        $memberMenus = [
-            ['title' => 'My Dashboard', 'url' => 'member/dashboard', 'icon' => 'fas fa-tachometer-alt', 'position' => 0, 'type' => 'member'],
-            ['title' => 'My Profile', 'url' => 'member/profile/complete', 'icon' => 'fas fa-user-circle', 'position' => 1, 'type' => 'member'],
-            ['title' => 'Events', 'url' => 'events', 'icon' => 'fas fa-calendar-alt', 'position' => 2, 'type' => 'member'],
-            ['title' => 'Gallery', 'url' => 'gallery', 'icon' => 'fas fa-images', 'position' => 3, 'type' => 'member'],
+        // 3. Financials (Group)
+        $finance = Menu::create([
+            'title'     => 'Financials',
+            'url'       => null,
+            'icon'      => 'fas fa-file-invoice-dollar',
+            'type'      => 'admin',
+            'target'    => '_self',
+            'position'  => 2,
+            'is_active' => true,
+        ]);
+
+        $financeItems = [
+            ['title' => 'Categories', 'url' => 'admin.finance.categories', 'icon' => 'fas fa-tags'],
+            ['title' => 'Income Tracker', 'url' => 'admin.finance.income', 'icon' => 'fas fa-hand-holding-usd'],
+            ['title' => 'Expense Tracker', 'url' => 'admin.finance.expense', 'icon' => 'fas fa-money-bill-wave'],
+            ['title' => 'Financial Report', 'url' => 'admin.finance.report', 'icon' => 'fas fa-chart-line'],
         ];
 
-        foreach ($memberMenus as $menu) {
-            Menu::updateOrCreate(['title' => $menu['title'], 'type' => 'member'], $menu);
+        foreach ($financeItems as $index => $item) {
+            Menu::create([
+                'title'     => $item['title'],
+                'url'       => $item['url'],
+                'icon'      => $item['icon'],
+                'parent_id' => $finance->id,
+                'type'      => 'admin',
+                'target'    => '_self',
+                'position'  => $index,
+                'is_active' => true,
+            ]);
+        }
+
+        // 4. Portfolio Works (Group)
+        $portfolio = Menu::create([
+            'title'     => 'Portfolio Assets',
+            'url'       => null,
+            'icon'      => 'fas fa-briefcase',
+            'type'      => 'admin',
+            'target'    => '_self',
+            'position'  => 3,
+            'is_active' => true,
+        ]);
+
+        $portfolioItems = [
+            ['title' => 'Programs', 'url' => 'admin.programs.index', 'icon' => 'fas fa-tasks'],
+            ['title' => 'Events', 'url' => 'admin.events.index', 'icon' => 'fas fa-calendar-alt'],
+            ['title' => 'Gallery Management', 'url' => 'admin.gallery.index', 'icon' => 'fas fa-images'],
+            ['title' => 'Sponsors', 'url' => 'admin.sponsors.index', 'icon' => 'fas fa-handshake'],
+            ['title' => 'Sliders', 'url' => 'admin.sliders.index', 'icon' => 'fas fa-film'],
+        ];
+
+        foreach ($portfolioItems as $index => $item) {
+            Menu::create([
+                'title'     => $item['title'],
+                'url'       => $item['url'],
+                'icon'      => $item['icon'],
+                'parent_id' => $portfolio->id,
+                'type'      => 'admin',
+                'target'    => '_self',
+                'position'  => $index,
+                'is_active' => true,
+            ]);
+        }
+
+        // 5. System Settings (Group)
+        $settings = Menu::create([
+            'title'     => 'System Settings',
+            'url'       => null,
+            'icon'      => 'fas fa-cogs',
+            'type'      => 'admin',
+            'target'    => '_self',
+            'position'  => 4,
+            'is_active' => true,
+        ]);
+
+        $settingsItems = [
+            ['title' => 'General Settings', 'url' => 'admin.settings.edit', 'icon' => 'fas fa-sliders-h'],
+            ['title' => 'Email Configuration', 'url' => 'admin.settings.smtp', 'icon' => 'fas fa-at'],
+            ['title' => 'Dynamic Menus', 'url' => 'admin.menus.index', 'icon' => 'fas fa-bars'],
+            ['title' => 'Mission & Vision', 'url' => 'admin.mission-vision.edit', 'icon' => 'fas fa-eye'],
+            ['title' => 'About Content', 'url' => 'admin.about.edit', 'icon' => 'fas fa-address-card'],
+            ['title' => 'Team Profile', 'url' => 'admin.team.index', 'icon' => 'fas fa-users'],
+        ];
+
+        foreach ($settingsItems as $index => $item) {
+            Menu::create([
+                'title'     => $item['title'],
+                'url'       => $item['url'],
+                'icon'      => $item['icon'],
+                'parent_id' => $settings->id,
+                'type'      => 'admin',
+                'target'    => '_self',
+                'position'  => $index,
+                'is_active' => true,
+            ]);
         }
     }
 }

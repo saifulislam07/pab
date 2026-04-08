@@ -84,4 +84,21 @@ class TeamMemberController extends Controller {
 
         return redirect()->route('admin.team.index')->with('success', 'Team member deleted successfully.');
     }
+
+    public function bulkDestroy(Request $request) {
+        $ids = json_decode($request->ids);
+        if (! $ids || ! is_array($ids)) {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+
+        $members = TeamMember::whereIn('id', $ids)->get();
+        foreach ($members as $member) {
+            if ($member->image) {
+                Storage::disk('public')->delete($member->image);
+            }
+            $member->delete();
+        }
+
+        return redirect()->route('admin.team.index')->with('success', count($members) . ' team members deleted successfully.');
+    }
 }

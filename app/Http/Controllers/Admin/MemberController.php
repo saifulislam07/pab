@@ -93,7 +93,52 @@ class MemberController extends Controller {
     }
 
     public function destroy(Member $member) {
+        if ($member->user && $member->user->programRegistrations()->count() > 0) {
+            return redirect()->back()->with('error', 'Cannot delete member with active program registrations.');
+        }
+
+        // Optional: delete user account if not admin
+        $user = $member->user;
         $member->delete();
+        
+        if ($user && ! $user->isAdmin()) {
+            $user->delete();
+        }
+
         return redirect()->back()->with('success', 'Member deleted successfully.');
+    }
+
+    public function bulkDestroy(Request $request) {
+        $ids = json_decode($request->ids);
+        if (! $ids || ! is_array($ids)) {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+
+        $members = Member::whereIn('id', $ids)->get();
+        $deletedCount = 0;
+        $skippedCount = 0;
+
+        foreach ($members as $member) {
+            if ($member->user && $member->user->programRegistrations()->count() > 0) {
+                $skippedCount++;
+                continue;
+            }
+
+            $user = $member->user;
+            $member->delete();
+            
+            if ($user && ! $user->isAdmin()) {
+                $user->delete();
+            }
+            
+            $deletedCount++;
+        }
+
+        $message = "{$deletedCount} members deleted successfully.";
+        if ($skippedCount > 0) {
+            $message .= " {$skippedCount} members skipped because they have active registrations.";
+        }
+
+        return redirect()->back()->with($skippedCount > 0 ? 'warning' : 'success', $message);
     }
 }

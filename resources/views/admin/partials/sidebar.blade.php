@@ -32,17 +32,34 @@
                 @foreach($menusToDisplay as $menu)
                     @php
                         $hasChildren = $menu->children->count() > 0;
-                        $isActive = false;
-                        if ($menu->url) {
-                            $isActive = request()->is(trim($menu->url, '/') . '*') || 
-                                        (Route::has($menu->url) ? request()->routeIs($menu->url . '*') : request()->fullUrlIs(url($menu->url) . '*'));
-                        }
                         
-                        // Special check for nested active state
+                        $isMenuRouteActive = function($url) {
+                            if (!$url) return false;
+                            
+                            // 1. Check if exact path or sub-path matches
+                            if (request()->is(trim($url, '/') . '*')) return true;
+                            
+                            // 2. Check if it's a route name
+                            if (Route::has($url)) {
+                                // Extract module name (e.g., 'admin.users' from 'admin.users.index')
+                                $parts = explode('.', $url);
+                                if (count($parts) >= 2) {
+                                    $module = $parts[0] . '.' . $parts[1];
+                                    if (request()->routeIs($module . '.*')) return true;
+                                }
+                                if (request()->routeIs($url)) return true;
+                            }
+                            
+                            // 3. Fallback to full URL check
+                            return request()->fullUrlIs(url($url) . '*');
+                        };
+
+                        $isActive = $isMenuRouteActive($menu->url);
+                        
+                        // Check nested children for parent active state
                         if (!$isActive && $hasChildren) {
                             foreach($menu->children as $child) {
-                                if ($child->url && (request()->is(trim($child->url, '/') . '*') || 
-                                    (Route::has($child->url) ? request()->routeIs($child->url . '*') : request()->fullUrlIs(url($child->url) . '*')))) {
+                                if ($isMenuRouteActive($child->url)) {
                                     $isActive = true;
                                     break;
                                 }
@@ -65,7 +82,7 @@
                             <ul class="nav nav-treeview">
                                 @foreach($menu->children as $child)
                                     @php
-                                        $childActive = request()->is(trim($child->url, '/') . '*') || ($child->url && request()->fullUrlIs(url($child->url) . '*'));
+                                        $childActive = $isMenuRouteActive($child->url);
                                     @endphp
                                     <li class="nav-item">
                                         <a href="{{ $child->url ? (Route::has($child->url) ? route($child->url) : (Str::startsWith($child->url, 'http') ? $child->url : url($child->url))) : '#' }}" 

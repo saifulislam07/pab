@@ -93,4 +93,42 @@ class SponsorController extends Controller {
 
         return redirect()->route('admin.sponsors.index')->with('success', 'Sponsor deleted successfully.');
     }
+
+    public function bulkDestroy(Request $request) {
+        $ids = json_decode($request->ids);
+        if (! $ids || ! is_array($ids)) {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+
+        $sponsors = Sponsor::whereIn('id', $ids)->get();
+        $deletedCount = 0;
+        $skippedCount = 0;
+
+        foreach ($sponsors as $sponsor) {
+            // Check if sponsor is linked to any programs
+            // The relationship is in Program model as belongsToMany(Sponsor)
+            // So we check if any programs exist for this sponsor ID
+            $existsInPrograms = \Illuminate\Support\Facades\DB::table('program_sponsor')
+                ->where('sponsor_id', $sponsor->id)
+                ->exists();
+
+            if ($existsInPrograms) {
+                $skippedCount++;
+                continue;
+            }
+
+            if ($sponsor->logo) {
+                Storage::disk('public')->delete($sponsor->logo);
+            }
+            $sponsor->delete();
+            $deletedCount++;
+        }
+
+        $message = "{$deletedCount} sponsors deleted successfully.";
+        if ($skippedCount > 0) {
+            $message .= " {$skippedCount} sponsors skipped because they are associated with programs.";
+        }
+
+        return redirect()->route('admin.sponsors.index')->with($skippedCount > 0 ? 'warning' : 'success', $message);
+    }
 }

@@ -87,9 +87,47 @@ class AdvertisementController extends Controller {
     }
 
     public function destroy(Advertisement $advertisement) {
-        Storage::disk('public')->delete($advertisement->image);
+        // Check for linked earnings
+        if (\App\Models\Earning::where('advertisement_id', $advertisement->id)->exists()) {
+            return redirect()->back()->with('error', 'Cannot delete advertisement with associated earning records.');
+        }
+
+        if ($advertisement->image) {
+            Storage::disk('public')->delete($advertisement->image);
+        }
         $advertisement->delete();
 
         return redirect()->route('admin.advertisements.index')->with('success', 'Advertisement deleted successfully.');
+    }
+
+    public function bulkDestroy(Request $request) {
+        $ids = json_decode($request->ids);
+        if (! $ids || ! is_array($ids)) {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+
+        $ads = Advertisement::whereIn('id', $ids)->get();
+        $deletedCount = 0;
+        $skippedCount = 0;
+
+        foreach ($ads as $ad) {
+            if (\App\Models\Earning::where('advertisement_id', $ad->id)->exists()) {
+                $skippedCount++;
+                continue;
+            }
+
+            if ($ad->image) {
+                Storage::disk('public')->delete($ad->image);
+            }
+            $ad->delete();
+            $deletedCount++;
+        }
+
+        $message = "{$deletedCount} advertisements deleted successfully.";
+        if ($skippedCount > 0) {
+            $message .= " {$skippedCount} advertisements skipped because they have associated earnings.";
+        }
+
+        return redirect()->route('admin.advertisements.index')->with($skippedCount > 0 ? 'warning' : 'success', $message);
     }
 }

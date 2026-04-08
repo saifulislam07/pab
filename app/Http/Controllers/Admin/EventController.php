@@ -77,11 +77,28 @@ class EventController extends Controller {
     }
 
     public function destroy(Event $event) {
-        if ($event->image) {
+        if ($event->image && ! str_starts_with($event->image, 'http')) {
             Storage::disk('public')->delete($event->image);
         }
         $event->delete();
 
         return redirect()->route('admin.events.index')->with('success', 'Event deleted successfully.');
+    }
+
+    public function bulkDestroy(Request $request) {
+        $ids = json_decode($request->ids);
+        if (! $ids || ! is_array($ids)) {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+
+        $events = Event::whereIn('id', $ids)->get();
+        foreach ($events as $event) {
+            if ($event->image && ! str_starts_with($event->image, 'http')) {
+                Storage::disk('public')->delete($event->image);
+            }
+            $event->delete();
+        }
+
+        return redirect()->route('admin.events.index')->with('success', count($events) . ' events deleted successfully.');
     }
 }

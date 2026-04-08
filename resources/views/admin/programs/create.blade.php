@@ -11,12 +11,18 @@
                 @csrf
                 <div class="card-body">
                     <div class="form-group">
-                        <label>Program Title</label>
-                        <input type="text" name="title" class="form-control" required>
+                        <label class="required-label">Program Title</label>
+                        <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" value="{{ old('title') }}" required>
+                        @error('title')
+                            <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
+                        @enderror
                     </div>
                     <div class="form-group">
-                        <label>Description</label>
-                        <textarea name="description" class="form-control" rows="5" required id="summernote"></textarea>
+                        <label class="required-label">Description</label>
+                        <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="5" required id="summernote">{{ old('description') }}</textarea>
+                        @error('description')
+                            <span class="text-danger text-sm"><strong>{{ $message }}</strong></span>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label>Banner Image</label>
@@ -59,11 +65,14 @@
                         <small class="text-muted">Hold CTRL (Windows) or CMD (Mac) to select multiple.</small>
                     </div>
                     <div class="form-group">
-                        <label>Is Active</label>
-                        <select name="is_active" class="form-control">
-                            <option value="1">Yes</option>
-                            <option value="0">No</option>
+                        <label class="required-label">Is Active</label>
+                        <select name="is_active" class="form-control @error('is_active') is-invalid @enderror">
+                            <option value="1" {{ old('is_active', '1') == '1' ? 'selected' : '' }}>Yes</option>
+                            <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>No</option>
                         </select>
+                        @error('is_active')
+                            <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
+                        @enderror
                     </div>
 
                     <hr>
@@ -162,19 +171,37 @@
 
         var fieldIndex = 1;
 
+        function toggleRegistrationRequired(isActive) {
+            $('#registration_details').find('input, select, textarea').each(function() {
+                if ($(this).attr('name') && $(this).attr('name').includes('registration_fields') && $(this).attr('name').includes('[name]')) {
+                    if (isActive) {
+                        $(this).prop('required', true);
+                    } else {
+                        $(this).prop('required', false);
+                    }
+                }
+            });
+        }
+
         $('#is_registration_active').change(function() {
             if($(this).is(':checked')) {
                 $('#registration_details').slideDown();
+                toggleRegistrationRequired(true);
             } else {
                 $('#registration_details').slideUp();
+                toggleRegistrationRequired(false);
             }
         });
 
+        // Initialize state
+        toggleRegistrationRequired($('#is_registration_active').is(':checked'));
+
         $('#add_field').click(function() {
+            var isRequired = $('#is_registration_active').is(':checked') ? 'required' : '';
             var row = `
                 <div class="row align-items-center mb-2 field-row">
                     <div class="col-md-5">
-                        <input type="text" name="registration_fields[${fieldIndex}][name]" class="form-control" placeholder="Field Name" required>
+                        <input type="text" name="registration_fields[${fieldIndex}][name]" class="form-control" placeholder="Field Name" ${isRequired}>
                     </div>
                     <div class="col-md-3">
                         <select name="registration_fields[${fieldIndex}][type]" class="form-control">

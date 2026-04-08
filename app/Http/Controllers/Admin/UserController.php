@@ -42,4 +42,31 @@ class UserController extends Controller {
         $user->delete();
         return redirect()->back()->with('success', 'User deleted successfully.');
     }
+
+    public function bulkDestroy(Request $request) {
+        $ids = json_decode($request->ids);
+        if (! $ids || ! is_array($ids)) {
+            return redirect()->back()->with('error', 'No users selected.');
+        }
+
+        $users = \App\Models\User::whereIn('id', $ids)->get();
+        $deletedCount = 0;
+        $skippedCount = 0;
+
+        foreach ($users as $user) {
+            if ($user->id === auth()->id()) {
+                $skippedCount++;
+                continue;
+            }
+            $user->delete();
+            $deletedCount++;
+        }
+
+        $message = "{$deletedCount} users deleted successfully.";
+        if ($skippedCount > 0) {
+            $message .= " Your own account was skipped.";
+        }
+
+        return redirect()->back()->with($skippedCount > 0 ? 'warning' : 'success', $message);
+    }
 }

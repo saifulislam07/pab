@@ -100,4 +100,21 @@ class GalleryController extends Controller {
 
         return redirect()->route('admin.gallery.index')->with('success', 'Gallery item deleted successfully.');
     }
+
+    public function bulkDestroy(Request $request) {
+        $ids = json_decode($request->ids);
+        if (! $ids || ! is_array($ids)) {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+
+        $items = GalleryItem::whereIn('id', $ids)->get();
+        foreach ($items as $item) {
+            if ($item->image && ! str_starts_with($item->image, 'http')) {
+                Storage::disk('public')->delete($item->image);
+            }
+            $item->delete();
+        }
+
+        return redirect()->route('admin.gallery.index')->with('success', count($items) . ' gallery items deleted successfully.');
+    }
 }

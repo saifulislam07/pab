@@ -1,5 +1,9 @@
 <li class="dd-item" data-id="{{ $menu->id }}">
-    <div class="dd-handle {{ !$menu->is_active ? 'text-muted' : '' }}">
+    <div class="dd-handle {{ !$menu->is_active ? 'text-muted' : '' }} d-flex align-items-center">
+        <div class="custom-control custom-checkbox mr-2 d-inline-block" style="pointer-events: auto;">
+            <input class="custom-control-input bulk-checkbox" type="checkbox" id="checkbox-{{ $menu->id }}" value="{{ $menu->id }}">
+            <label for="checkbox-{{ $menu->id }}" class="custom-control-label"></label>
+        </div>
         @if($menu->icon) <i class="{{ $menu->icon }} mr-1"></i> @endif
         <span class="text-bold">{{ $menu->title }}</span>
         @if(!$menu->is_active)
