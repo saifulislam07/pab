@@ -12,8 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('programs', function (Blueprint $table) {
-            $table->dropForeign(['sponsor_id']);
-            $table->dropColumn('sponsor_id');
+            if (Schema::hasColumn('programs', 'sponsor_id')) {
+                // Safely attempt to drop foreign key if it exists
+                // We use an array for dropForeign which makes Laravel look up the constraint name
+                try {
+                    $table->dropForeign(['sponsor_id']);
+                } catch (\Exception $e) {
+                    // Ignore error if foreign key doesn't exist
+                }
+                $table->dropColumn('sponsor_id');
+            }
         });
 
         Schema::create('program_sponsor', function (Blueprint $table) {
