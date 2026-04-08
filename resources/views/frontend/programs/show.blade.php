@@ -127,24 +127,97 @@
                                 </h2>
 
                                 @if(session('success'))
-                                    <script>
-                                        document.addEventListener('DOMContentLoaded', function() {
-                                            Swal.fire({
-                                                title: 'সফল!',
-                                                text: 'তোমার রেজিস্ট্রেশন সাকসেস হয়েছে, এডমিন এপ্রুভাল হলে এইখানে লিস্টে দেখতে পারবে। অন্যদের সাথে শেয়ার করার অনুরোধ রইলো',
-                                                icon: 'success',
-                                                background: '#111827',
-                                                color: '#f3f4f6',
-                                                confirmButtonColor: '#dc2626',
-                                                confirmButtonText: 'ঠিক আছে',
-                                                customClass: {
-                                                    popup: 'rounded-2xl border border-gray-700 shadow-2xl shadow-red-900/20',
-                                                    title: 'text-2xl font-bold',
-                                                    confirmButton: 'rounded-xl px-8 py-3'
-                                                }
-                                            });
-                                        });
-                                    </script>
+                                    <div x-data="{ 
+                                            showBadge: true,
+                                            isDownloading: false,
+                                            downloadBadge() {
+                                                this.isDownloading = true;
+                                                const badge = document.getElementById('registration-badge');
+                                                html2canvas(badge, {
+                                                    scale: 3, // Higher quality
+                                                    useCORS: true,
+                                                    backgroundColor: '#111827'
+                                                }).then(canvas => {
+                                                    const link = document.createElement('a');
+                                                    link.download = '{{ session('reg_id') }}.png';
+                                                    link.href = canvas.toDataURL('image/png');
+                                                    link.click();
+                                                    this.isDownloading = false;
+                                                });
+                                            }
+                                        }"
+                                        x-show="showBadge"
+                                        class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
+                                        style="display: none;"
+                                        x-init="$el.style.display = 'flex'">
+                                        
+                                        <div class="bg-gray-900 border border-gray-700 rounded-3xl shadow-2xl max-w-sm w-full overflow-hidden relative animate-scale-up">
+                                            <!-- Close Button -->
+                                            <button @click="showBadge = false" class="absolute top-4 right-4 text-gray-500 hover:text-white transition z-20">
+                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                            </button>
+
+                                            <!-- Badge Content to be Captured -->
+                                            <div id="registration-badge" class="p-8 text-center bg-gray-900 relative overflow-hidden">
+                                                <!-- Decorative Elements -->
+                                                <div class="absolute -top-10 -left-10 w-32 h-32 bg-red-600/10 rounded-full blur-3xl"></div>
+                                                <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-red-600/10 rounded-full blur-3xl"></div>
+                                                
+                                                <!-- Association Logo/Name -->
+                                                <div class="mb-6">
+                                                    <h4 class="text-red-500 font-black tracking-tighter uppercase text-xs">Photography Association Bangladesh</h4>
+                                                    <div class="h-px w-12 bg-red-600/30 mx-auto mt-2"></div>
+                                                </div>
+
+                                                <!-- User Photo -->
+                                                <div class="relative w-32 h-32 mx-auto mb-6">
+                                                    <div class="absolute inset-0 bg-gradient-to-tr from-red-600 to-red-400 rounded-2xl rotate-6"></div>
+                                                    <img src="{{ session('reg_photo') ?? 'https://ui-avatars.com/api/?name=' . urlencode(session('reg_name')) . '&background=dc2626&color=fff&size=200' }}" 
+                                                         class="relative w-full h-full object-cover rounded-2xl shadow-xl border-2 border-gray-800"
+                                                         crossorigin="anonymous">
+                                                </div>
+
+                                                <!-- Message -->
+                                                <div class="space-y-2 mb-8">
+                                                    <h3 class="text-2xl font-black text-white leading-tight">আমি রেজিস্ট্রেশন করেছি <br><span class="text-red-500">আপনি করেছেন তো?</span></h3>
+                                                    <p class="text-gray-400 text-sm italic font-medium">দেখা হচ্ছে খুবই শীঘ্রই!</p>
+                                                </div>
+
+                                                <!-- Program & ID Info -->
+                                                <div class="bg-gray-800/50 rounded-2xl p-4 border border-gray-700/50">
+                                                    <h5 class="text-white font-bold text-sm truncate mb-1">{{ session('program_name') }}</h5>
+                                                    <div class="flex items-center justify-center gap-2">
+                                                        <span class="text-[10px] text-gray-500 uppercase font-bold">Registration ID</span>
+                                                        <span class="text-red-500 font-black text-sm tracking-widest">{{ session('reg_id') }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Actions (Not Captured) -->
+                                            <div class="p-6 pt-0 space-y-3">
+                                                <button @click="downloadBadge()" 
+                                                        class="w-full flex items-center justify-center gap-3 bg-red-600 hover:bg-red-700 text-white font-black py-4 rounded-2xl transition shadow-lg shadow-red-600/30 disabled:opacity-50"
+                                                        :disabled="isDownloading">
+                                                    <template x-if="!isDownloading">
+                                                        <div class="flex items-center gap-2">
+                                                            <i class="fas fa-download"></i>
+                                                            <span>Download My Badge</span>
+                                                        </div>
+                                                    </template>
+                                                    <template x-if="isDownloading">
+                                                        <div class="flex items-center gap-2">
+                                                            <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                            </svg>
+                                                            <span>Generating Image...</span>
+                                                        </div>
+                                                    </template>
+                                                </button>
+                                                <p class="text-center text-[10px] text-gray-500 font-medium">Share your badge on profile and tag us!</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 @endif
 
                                     @if($program->registration_fee > 0)
@@ -179,15 +252,15 @@
 
                                                     @if($type == 'textarea')
                                                         <textarea name="{{ $fieldName }}" id="{{ $fieldName }}" {{ $required ? 'required' : '' }}
-                                                        class="w-full bg-gray-800/50 border border-gray-700 rounded-xl py-3 md:py-4 px-4 md:px-5 text-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition duration-300 placeholder-gray-600"
-                                                        rows="4" placeholder="Enter {{ strtolower($label) }}"></textarea>
+                                                        class="w-full bg-gray-800/50 border {{ $errors->has($fieldName) ? 'border-red-500' : 'border-gray-700' }} rounded-xl py-3 md:py-4 px-4 md:px-5 text-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition duration-300 placeholder-gray-600"
+                                                        rows="4" placeholder="Enter {{ strtolower($label) }}">{{ old($fieldName) }}</textarea>
                                                     @elseif($type == 'photo')
                                                         <input type="file" name="{{ $fieldName }}" id="{{ $fieldName }}" {{ $required ? 'required' : '' }} accept="image/*"
-                                                        class="w-full bg-gray-800/50 border border-gray-700 rounded-xl py-3 md:py-4 px-4 md:px-5 text-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition duration-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer">
+                                                        class="w-full bg-gray-800/50 border {{ $errors->has($fieldName) ? 'border-red-500' : 'border-gray-700' }} rounded-xl py-3 md:py-4 px-4 md:px-5 text-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition duration-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer">
                                                     @else
                                                         <input type="{{ $type }}" name="{{ $fieldName }}" id="{{ $fieldName }}" {{ $required ? 'required' : '' }}
-                                                        class="w-full bg-gray-800/50 border border-gray-700 rounded-xl py-3 md:py-4 px-4 md:px-5 text-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition duration-300 placeholder-gray-600"
-                                                        placeholder="Enter {{ strtolower($label) }}">
+                                                        class="w-full bg-gray-800/50 border {{ $errors->has($fieldName) ? 'border-red-500' : 'border-gray-700' }} rounded-xl py-3 md:py-4 px-4 md:px-5 text-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition duration-300 placeholder-gray-600"
+                                                        placeholder="Enter {{ strtolower($label) }}" value="{{ old($fieldName) }}">
                                                     @endif
 
                                                     @error($fieldName)
@@ -360,6 +433,7 @@
     </style>
 
     @push('scripts')
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         const banglaToEnglishMap = {'০':'0','১':'1','২':'2','৩':'3','৪':'4','৫':'5','৬':'6','৭':'7','৮':'8','৯':'9'};

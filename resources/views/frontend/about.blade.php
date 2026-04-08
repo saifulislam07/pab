@@ -44,12 +44,11 @@
 
     <!-- Stats -->
     <div class="bg-gray-800 mt-20 py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
             @foreach([
-                ['count' => $about->stats_years ?? '15+', 'label' => 'Years Active'],
+                ['count' => $registrants_this_year . '+', 'label' => 'Registrations This Year'],
                 ['count' => ($total_members ?? 0) . '+', 'label' => 'Members'],
                 ['count' => ($total_programs ?? 0) . '+', 'label' => 'Programs & Events'],
-                ['count' => $about->stats_awards ?? '50+', 'label' => 'Awards Won']
             ] as $stat)
                 <div class="animate-fade-in">
                     <span class="block text-4xl font-bold text-red-500 mb-2">{{ $stat['count'] }}</span>

@@ -37,8 +37,11 @@ class FrontendController extends Controller {
         $about = \App\Models\About::first();
         $total_members = \App\Models\Member::where('status', 'approved')->count();
         $total_programs = \App\Models\Program::count() + \App\Models\Event::count();
+        
+        $registrants_this_year = \App\Models\User::where('role', 'member')->whereYear('created_at', now()->year)->count() + 
+                                \App\Models\ProgramRegistration::whereYear('created_at', now()->year)->count();
 
-        return view('frontend.about', compact('about', 'total_members', 'total_programs'));
+        return view('frontend.about', compact('about', 'total_members', 'total_programs', 'registrants_this_year'));
     }
 
     public function missionVision() {
@@ -319,7 +322,7 @@ class FrontendController extends Controller {
             }
         }
 
-        ProgramRegistration::create([
+        $registration = ProgramRegistration::create([
             'program_id'        => $program->id,
             'user_id'           => $userId,
             'registration_data' => $validatedData,
@@ -328,7 +331,21 @@ class FrontendController extends Controller {
             'transaction_id'    => $transactionId,
         ]);
 
-        return redirect()->back()->with('success', 'Registration submitted successfully!');
+        $regPhoto = null;
+        foreach($validatedData as $key => $value) {
+            if(Str::contains(strtolower($key), ['photo', 'image', 'ছবি', 'পিকচার'])) {
+                $regPhoto = $value;
+                break;
+            }
+        }
+
+        return redirect()->back()->with([
+            'success'   => 'Registration submitted successfully!',
+            'reg_id'    => $registration->formatted_id,
+            'reg_name'  => $regName,
+            'reg_photo' => $regPhoto ? asset('programe/' . $regPhoto) : null,
+            'program_name' => $program->title
+        ]);
     }
 
     public function contact() {
