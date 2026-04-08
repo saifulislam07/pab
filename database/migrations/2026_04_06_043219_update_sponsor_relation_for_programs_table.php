@@ -11,18 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('programs', function (Blueprint $table) {
-            if (Schema::hasColumn('programs', 'sponsor_id')) {
-                // Safely attempt to drop foreign key if it exists
-                // We use an array for dropForeign which makes Laravel look up the constraint name
-                try {
-                    $table->dropForeign(['sponsor_id']);
-                } catch (\Exception $e) {
-                    // Ignore error if foreign key doesn't exist
-                }
+        // 1. Try to drop the foreign key safely
+        try {
+            Schema::table('programs', function (Blueprint $table) {
+                $table->dropForeign(['sponsor_id']);
+            });
+        } catch (\Exception $e) {
+            // Ignore if foreign key doesn't exist
+        }
+
+        // 2. Try to drop the column safely
+        if (Schema::hasColumn('programs', 'sponsor_id')) {
+            Schema::table('programs', function (Blueprint $table) {
                 $table->dropColumn('sponsor_id');
-            }
-        });
+            });
+        }
 
         Schema::create('program_sponsor', function (Blueprint $table) {
             $table->id();
