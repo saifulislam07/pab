@@ -13,8 +13,8 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
         <!-- Image Grid -->
         <div class="grid grid-cols-2 gap-4 animate-fade-in">
-            <img src="{{ Str::startsWith($about->image_main ?? '', 'http') ? $about->image_main : asset('storage/' . $about->image_main) }}" class="rounded-lg shadow-xl transform translate-y-8">
-            <img src="{{ Str::startsWith($about->image_secondary ?? '', 'http') ? $about->image_secondary : asset('storage/' . $about->image_secondary) }}" class="rounded-lg shadow-xl">
+            <img src="{{ Str::startsWith($about->image_main ?? '', 'http') ? $about->image_main : asset($about->image_main) }}" class="rounded-lg shadow-xl transform translate-y-8">
+            <img src="{{ Str::startsWith($about->image_secondary ?? '', 'http') ? $about->image_secondary : asset($about->image_secondary) }}" class="rounded-lg shadow-xl">
         </div>
 
         <!-- Text Content -->
@@ -47,8 +47,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             @foreach([
                 ['count' => $about->stats_years ?? '15+', 'label' => 'Years Active'],
-                ['count' => $about->stats_members ?? '500+', 'label' => 'Members'],
-                ['count' => $about->stats_workshops ?? '120+', 'label' => 'Workshops'],
+                ['count' => ($total_members ?? 0) . '+', 'label' => 'Members'],
+                ['count' => ($total_programs ?? 0) . '+', 'label' => 'Programs & Events'],
                 ['count' => $about->stats_awards ?? '50+', 'label' => 'Awards Won']
             ] as $stat)
                 <div class="animate-fade-in">

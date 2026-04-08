@@ -18,7 +18,7 @@
                 <!-- Profile Image -->
                 <div class="relative -mt-24 mb-6 inline-block">
                     <div class="w-48 h-48 rounded-2xl overflow-hidden border-8 border-gray-800 bg-gray-700 shadow-xl">
-                        <img src="{{ $member->image ? asset('storage/' . $member->image) : 'https://ui-avatars.com/api/?name=' . urlencode($member->name) . '&size=200' }}" 
+                        <img src="{{ $member->image ? asset($member->image) : 'https://ui-avatars.com/api/?name=' . urlencode($member->name) . '&size=200' }}" 
                              alt="{{ $member->name }}" 
                              class="w-full h-full object-cover">
                     </div>

@@ -69,7 +69,7 @@
                                 </div>
                             </td>
                             <td>
-                                <img src="{{ Str::startsWith($slider->image, 'http') ? $slider->image : asset('storage/' . $slider->image) }}" width="120" class="img-thumbnail rounded shadow-sm">
+                                <img src="{{ Str::startsWith($slider->image, 'http') ? $slider->image : asset($slider->image) }}" width="120" class="img-thumbnail rounded shadow-sm">
                             </td>
                             <td class="align-middle font-weight-bold">{{ $slider->title }}</td>
                             <td class="align-middle">{{ $slider->order }}</td>

@@ -31,7 +31,7 @@
                         <input type="file" name="image" class="form-control-file" accept="image/*">
                         @if($advertisement->image)
                             <div class="mt-2">
-                                <img src="{{ asset('storage/' . $advertisement->image) }}" alt="{{ $advertisement->title }}" width="200" class="img-thumbnail">
+                                <img src="{{ asset($advertisement->image) }}" alt="{{ $advertisement->title }}" width="200" class="img-thumbnail">
                             </div>
                         @endif
                         <small class="text-muted">Leave empty to keep current image</small>

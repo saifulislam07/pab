@@ -56,7 +56,7 @@
 
                                                 @if($sponsor->logo)
                                                     <div class="h-20 w-full mb-4 flex items-center justify-center relative z-10">
-                                                        <img src="{{ Str::startsWith($sponsor->logo, ['http://', 'https://']) ? $sponsor->logo : asset('storage/' . $sponsor->logo) }}" alt="{{ $sponsor->name }}" class="max-h-full max-w-full object-contain filter drop-shadow-md group-hover:scale-110 transition-transform duration-500">
+                                                        <img src="{{ Str::startsWith($sponsor->logo, ['http://', 'https://']) ? $sponsor->logo : asset($sponsor->logo) }}" alt="{{ $sponsor->name }}" class="max-h-full max-w-full object-contain filter drop-shadow-md group-hover:scale-110 transition-transform duration-500">
                                                     </div>
                                                 @else
                                                     <div class="h-16 w-16 rounded-full bg-gray-700 mb-4 flex items-center justify-center border-2 border-dashed border-gray-600 group-hover:border-red-500 transition-colors relative z-10">

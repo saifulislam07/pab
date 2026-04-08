@@ -6,7 +6,7 @@
     <title>@yield('title', $site_setting->site_title ?? config('app.name', 'AdminLTE'))</title>
 
     @if($site_setting->favicon)
-        <link rel="icon" type="image/png" href="{{ asset('storage/' . $site_setting->favicon) }}">
+        <link rel="icon" type="image/png" href="{{ asset($site_setting->favicon) }}">
     @endif
 
     <!-- Google Font: Source Sans Pro -->

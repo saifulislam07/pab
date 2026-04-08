@@ -45,7 +45,7 @@
                                 <input type="file" name="logo" class="form-control-file">
                                 @if(isset($setting->logo))
                                     <div class="mt-2">
-                                        <img src="{{ asset('storage/' . $setting->logo) }}" alt="Logo" width="100">
+                                        <img src="{{ asset($setting->logo) }}" alt="Logo" width="100">
                                     </div>
                                 @endif
                                 <small class="text-muted">Recommended: Transparent PNG, 200x80px</small>
@@ -55,7 +55,7 @@
                                 <input type="file" name="favicon" class="form-control-file">
                                 @if(isset($setting->favicon))
                                     <div class="mt-2">
-                                        <img src="{{ asset('storage/' . $setting->favicon) }}" alt="Favicon" width="32">
+                                        <img src="{{ asset($setting->favicon) }}" alt="Favicon" width="32">
                                     </div>
                                 @endif
                                 <small class="text-muted">Recommended: 32x32px .ico or .png</small>

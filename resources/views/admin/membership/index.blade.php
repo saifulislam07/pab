@@ -34,7 +34,7 @@
                         <tr>
                             <td class="align-middle">
                                 <div class="d-flex align-items-center">
-                                    <img src="{{ $member->image ? asset('storage/' . $member->image) : 'https://ui-avatars.com/api/?name=' . urlencode($member->name) }}" width="40" height="40" class="img-circle mr-2">
+                                    <img src="{{ $member->image ? asset($member->image) : 'https://ui-avatars.com/api/?name=' . urlencode($member->name) }}" width="40" height="40" class="img-circle mr-2">
                                     <div>
                                         <div class="font-weight-bold">{{ $member->name }}</div>
                                         <small class="text-muted">{{ $member->email }}</small>
@@ -53,8 +53,8 @@
                             </td>
                             <td class="align-middle">
                                 @if($member->payment_proof)
-                                    <a href="{{ asset('storage/' . $member->payment_proof) }}" target="_blank">
-                                        <img src="{{ asset('storage/' . $member->payment_proof) }}" width="50" height="50" style="object-fit: cover; border-radius: 4px; border: 1px solid #ddd;">
+                                    <a href="{{ asset($member->payment_proof) }}" target="_blank">
+                                        <img src="{{ asset($member->payment_proof) }}" width="50" height="50" style="object-fit: cover; border-radius: 4px; border: 1px solid #ddd;">
                                     </a>
                                 @else
                                     <span class="text-muted">No Proof</span>

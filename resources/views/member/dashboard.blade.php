@@ -127,7 +127,7 @@
                         <div class="row no-gutters" style="position: relative; z-index: 1;">
                             <div class="col-4">
                                 <div class="rounded overflow-hidden border border-secondary bg-dark shadow-sm" style="height: 80px; width: 80px;">
-                                    <img src="{{ $member->image ? asset('storage/' . $member->image) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=random' }}" 
+                                    <img src="{{ $member->image ? asset($member->image) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=random' }}" 
                                          class="img-fluid" 
                                          style="width: 100%; height: 100%; object-fit: cover;"
                                          alt="{{ auth()->user()->name }}"

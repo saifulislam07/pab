@@ -19,18 +19,26 @@ class FrontendController extends Controller {
         $about = \App\Models\About::first();
         $sponsors = \App\Models\Sponsor::where('is_active', true)->orderBy('order')->get();
         $latest_works = \App\Models\GalleryItem::latest()->take(3)->get();
+        $total_members = \App\Models\Member::where('status', 'approved')->count();
+        $total_programs = \App\Models\Program::count() + \App\Models\Event::count();
+
         return view('frontend.home', [
-            'sliders'      => $sliders,
-            'mission'      => $mission,
-            'about'        => $about,
-            'sponsors'     => $sponsors,
-            'latest_works' => $latest_works,
+            'sliders'        => $sliders,
+            'mission'        => $mission,
+            'about'          => $about,
+            'sponsors'       => $sponsors,
+            'latest_works'   => $latest_works,
+            'total_members'  => $total_members,
+            'total_programs' => $total_programs,
         ]);
     }
 
     public function about() {
         $about = \App\Models\About::first();
-        return view('frontend.about', compact('about'));
+        $total_members = \App\Models\Member::where('status', 'approved')->count();
+        $total_programs = \App\Models\Program::count() + \App\Models\Event::count();
+
+        return view('frontend.about', compact('about', 'total_members', 'total_programs'));
     }
 
     public function missionVision() {

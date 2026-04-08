@@ -71,7 +71,7 @@
                             </td>
                             <td class="align-middle">{{ $member->order }}</td>
                             <td>
-                                <img src="{{ $member->image ? asset('storage/' . $member->image) : 'https://ui-avatars.com/api/?name=' . urlencode($member->name) }}" width="45" height="45" class="img-circle elevation-2">
+                                <img src="{{ $member->image ? asset($member->image) : 'https://ui-avatars.com/api/?name=' . urlencode($member->name) }}" width="45" height="45" class="img-circle elevation-2">
                             </td>
                             <td class="align-middle font-weight-bold">{{ $member->name }}</td>
                             <td class="align-middle">{{ $member->role }}</td>

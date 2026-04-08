@@ -71,7 +71,7 @@
                                 </div>
                             </td>
                             <td>
-                                <img src="{{ Str::startsWith($item->image, 'http') ? $item->image : asset('storage/' . $item->image) }}" width="80" class="img-thumbnail rounded shadow-sm">
+                                <img src="{{ Str::startsWith($item->image, 'http') ? $item->image : asset($item->image) }}" width="80" class="img-thumbnail rounded shadow-sm">
                             </td>
                             <td class="align-middle">{{ $item->title ?? 'N/A' }}</td>
                             <td class="align-middle"><span class="badge badge-info">{{ $item->category->name ?? 'Uncategorized' }}</span></td>

@@ -15,7 +15,7 @@
                         <label>Image</label>
                         <input type="file" name="image" class="form-control-file">
                         <div class="mt-2">
-                            <img src="{{ Str::startsWith($slider->image, 'http') ? $slider->image : asset('storage/' . $slider->image) }}" width="200">
+                            <img src="{{ Str::startsWith($slider->image, 'http') ? $slider->image : asset($slider->image) }}" width="200">
                         </div>
                         <small class="text-muted">Recommended: 1920x800px. Leave blank to keep current image.</small>
                     </div>

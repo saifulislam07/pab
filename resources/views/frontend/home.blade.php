@@ -7,7 +7,7 @@
         slides: [
             @foreach($sliders as $slider)
             { 
-                img: '{{ Str::startsWith($slider->image, 'http') ? $slider->image : asset('storage/' . $slider->image) }}', 
+                img: '{{ Str::startsWith($slider->image, 'http') ? $slider->image : asset($slider->image) }}', 
                 title: '{{ $slider->title }}', 
                 subtitle: '{{ $slider->subtitle }}' 
             },
@@ -78,12 +78,12 @@
                     </p>
                     <div class="grid grid-cols-2 gap-4 sm:gap-8 py-4">
                         <div>
-                            <span class="block text-2xl sm:text-4xl font-bold text-white mb-2">{{ $about->stats_members ?? '500+' }}</span>
+                            <span class="block text-2xl sm:text-4xl font-bold text-white mb-2">{{ $total_members }}+</span>
                             <span class="text-xs sm:text-sm text-gray-500 uppercase tracking-widest">Active Members</span>
                         </div>
                         <div>
-                            <span class="block text-2xl sm:text-4xl font-bold text-white mb-2">{{ $about->stats_workshops ?? '120+' }}</span>
-                            <span class="text-xs sm:text-sm text-gray-500 uppercase tracking-widest">Workshops & Events</span>
+                            <span class="block text-2xl sm:text-4xl font-bold text-white mb-2">{{ $total_programs }}+</span>
+                            <span class="text-xs sm:text-sm text-gray-500 uppercase tracking-widest">Programs & Events</span>
                         </div>
                     </div>
                     <a href="{{ route('about') }}" class="inline-block text-red-500 border-b border-red-500 pb-1 hover:text-red-400 hover:border-red-400 transition">
@@ -96,7 +96,7 @@
                      :class="{ 'opacity-0 scale-95': !shown, 'opacity-100 scale-100': shown }"
                      class="transition-all duration-1000 ease-out delay-300">
                     <div class="hidden sm:block absolute inset-0 bg-red-500 transform translate-x-4 translate-y-4 rounded-lg"></div>
-                    <img src="{{ isset($about->image_main) ? (Str::startsWith($about->image_main, ['http://', 'https://']) ? $about->image_main : asset('storage/' . $about->image_main)) : 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=2000&auto=format&fit=crop' }}" 
+                    <img src="{{ isset($about->image_main) ? (Str::startsWith($about->image_main, ['http://', 'https://']) ? $about->image_main : asset($about->image_main)) : 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=2000&auto=format&fit=crop' }}" 
                          alt="{{ $about->title ?? 'Who We Are' }}" 
                          class="relative rounded-lg shadow-2xl grayscale hover:grayscale-0 transition duration-500 w-full h-[250px] sm:h-[400px] object-cover">
                 </div>
@@ -118,7 +118,7 @@
                      x-intersect.once="shown = true"
                      :class="{ 'opacity-0 translate-y-10': !shown, 'opacity-100 translate-y-0': shown }"
                      class="transition-all duration-700 ease-out">
-                    <img src="{{ Str::startsWith($work->image, 'http') ? $work->image : asset('storage/' . $work->image) }}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="{{ $work->title }}">
+                    <img src="{{ Str::startsWith($work->image, 'http') ? $work->image : asset($work->image) }}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="{{ $work->title }}">
                     <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col items-center justify-center p-4">
                         <h4 class="text-white text-xl font-bold mb-2 transform translate-y-4 group-hover:translate-y-0 transition duration-300">{{ $work->title }}</h4>
                         <span class="text-xs text-gray-300 uppercase tracking-widest mb-4 transform translate-y-4 group-hover:translate-y-0 transition duration-300 delay-75">{{ $work->category }}</span>
@@ -150,7 +150,7 @@
                     @forelse($sponsors as $sponsor)
                         <div class="swiper-slide">
                             <a href="{{ $sponsor->link ?? '#' }}" target="_blank" class="sponsor-card group">
-                                <img src="{{ \Illuminate\Support\Str::startsWith($sponsor->logo, 'http') ? $sponsor->logo : asset('storage/' . $sponsor->logo) }}" 
+                                <img src="{{ \Illuminate\Support\Str::startsWith($sponsor->logo, 'http') ? $sponsor->logo : asset($sponsor->logo) }}" 
                                      alt="{{ $sponsor->name }}" 
                                      title="{{ $sponsor->name }}"
                                      class="max-w-full object-contain">

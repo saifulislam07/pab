@@ -76,7 +76,7 @@
                                 <small class="form-text text-muted">Recommended size: 600x400px (or any landscape orientation)</small>
                                 @if(isset($about->image_main))
                                     <div class="mt-2">
-                                        <img src="{{ asset('storage/' . $about->image_main) }}" alt="Main Image" width="150">
+                                        <img src="{{ asset($about->image_main) }}" alt="Main Image" width="150">
                                     </div>
                                 @endif
                             </div>
@@ -88,7 +88,7 @@
                                 <small class="form-text text-muted">Recommended size: 600x400px (or any landscape orientation)</small>
                                 @if(isset($about->image_secondary))
                                     <div class="mt-2">
-                                        <img src="{{ asset('storage/' . $about->image_secondary) }}" alt="Secondary Image" width="150">
+                                        <img src="{{ asset($about->image_secondary) }}" alt="Secondary Image" width="150">
                                     </div>
                                 @endif
                             </div>

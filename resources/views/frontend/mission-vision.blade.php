@@ -16,7 +16,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
                 <div class="relative px-4 md:px-0">
                     <div class="absolute inset-0 bg-red-500 transform translate-x-2 translate-y-2 md:translate-x-4 md:translate-y-4 rounded-lg"></div>
-                    <img src="{{ Str::startsWith($content->mission_image ?? '', 'http') ? $content->mission_image : asset('storage/' . $content->mission_image) }}"
+                    <img src="{{ Str::startsWith($content->mission_image ?? '', 'http') ? $content->mission_image : asset($content->mission_image) }}"
                          alt="{{ $content->mission_title ?? 'Our Mission' }}"
                          class="relative rounded-lg shadow-2xl w-full h-64 md:h-80 object-cover grayscale hover:grayscale-0 transition duration-500">
                 </div>
@@ -71,7 +71,7 @@
                 </div>
                 <div class="relative order-1 lg:order-2 px-4 md:px-0">
                     <div class="absolute inset-0 bg-red-500 transform -translate-x-2 translate-y-2 md:-translate-x-4 md:translate-y-4 rounded-lg"></div>
-                    <img src="{{ Str::startsWith($content->vision_image ?? '', 'http') ? $content->vision_image : asset('storage/' . $content->vision_image) }}"
+                    <img src="{{ Str::startsWith($content->vision_image ?? '', 'http') ? $content->vision_image : asset($content->vision_image) }}"
                          alt="{{ $content->vision_title ?? 'Our Vision' }}"
                          class="relative rounded-lg shadow-2xl w-full h-64 md:h-80 object-cover grayscale hover:grayscale-0 transition duration-500">
                 </div>

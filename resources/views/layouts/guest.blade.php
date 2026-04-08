@@ -8,7 +8,7 @@
         <title>{{ $site_setting->site_title ?? config('app.name', 'Laravel') }}</title>
 
         @if($site_setting->favicon)
-            <link rel="icon" type="image/png" href="{{ asset('storage/' . $site_setting->favicon) }}">
+            <link rel="icon" type="image/png" href="{{ asset($site_setting->favicon) }}">
         @endif
 
         <!-- Fonts -->

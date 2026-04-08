@@ -80,7 +80,7 @@
                                 </div>
                             </td>
                             <td>
-                                <img src="{{ asset('storage/' . $ad->image) }}" alt="{{ $ad->title }}" width="80" class="img-thumbnail">
+                                <img src="{{ asset($ad->image) }}" alt="{{ $ad->title }}" width="80" class="img-thumbnail">
                             </td>
                             <td class="align-middle">
                                 {{ $ad->title }}

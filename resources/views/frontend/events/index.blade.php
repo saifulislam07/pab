@@ -31,7 +31,7 @@
                     <div class="swiper-slide">
                         <div class="relative rounded-xl overflow-hidden shadow-lg border border-gray-700 group bg-gray-800">
                             <a href="{{ $ad->link ?? '#' }}" target="{{ $ad->link ? '_blank' : '_self' }}" rel="noopener noreferrer">
-                                <img src="{{ Str::startsWith($ad->image, ['http://', 'https://']) ? $ad->image : asset('storage/' . $ad->image) }}" alt="{{ $ad->title }}" class="w-full h-auto object-cover transition duration-300 group-hover:opacity-90">
+                                <img src="{{ Str::startsWith($ad->image, ['http://', 'https://']) ? $ad->image : asset($ad) }}" alt="{{ $ad->title }}" class="w-full h-auto object-cover transition duration-300 group-hover:opacity-90">
                             </a>
                             <span class="absolute top-2 right-2 bg-black/60 text-gray-400 text-xs px-2 py-1 rounded">Ad</span>
                         </div>
@@ -95,7 +95,7 @@
                         <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg group hover:-translate-y-2 transition duration-300">
                             <div class="relative h-56 overflow-hidden">
                                 @if($event->image)
-                                    <img src="{{ Str::startsWith($event->image, ['http://', 'https://']) ? $event->image : asset('storage/' . $event->image) }}" alt="{{ $event->title }}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                                    <img src="{{ Str::startsWith($event->image, ['http://', 'https://']) ? $event->image : asset($event->image) }}" alt="{{ $event->title }}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
                                 @else
                                     <div class="w-full h-full bg-gray-700 flex items-center justify-center">
                                         <span class="text-gray-500">No Image</span>
@@ -147,7 +147,7 @@
                 <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden group">
                     <div class="relative rounded-lg overflow-hidden shadow-inner p-4">
                         <a href="{{ $ad->link ?? '#' }}" target="_blank" rel="noopener noreferrer">
-                            <img src="{{ Str::startsWith($ad->image, ['http://', 'https://']) ? $ad->image : asset('storage/' . $ad->image) }}" alt="{{ $ad->title }}" class="w-full h-auto object-cover transition duration-300 group-hover:opacity-90 rounded-md border border-gray-700">
+                            <img src="{{ Str::startsWith($ad->image, ['http://', 'https://']) ? $ad->image : asset($ad->image) }}" alt="{{ $ad->title }}" class="w-full h-auto object-cover transition duration-300 group-hover:opacity-90 rounded-md border border-gray-700">
                         </a>
                         <div class="mt-2">
                             <p class="text-white text-sm font-medium truncate">{{ $ad->title }}</p>

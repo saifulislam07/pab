@@ -114,7 +114,7 @@
                             </td>
                             <td class="align-middle">{{ $sponsor->order }}</td>
                             <td>
-                                <img src="{{ \Illuminate\Support\Str::startsWith($sponsor->logo, 'http') ? $sponsor->logo : asset('storage/' . $sponsor->logo) }}" width="80" class="img-thumbnail rounded shadow-sm bg-light">
+                                <img src="{{ \Illuminate\Support\Str::startsWith($sponsor->logo, 'http') ? $sponsor->logo : asset($sponsor->logo) }}" width="80" class="img-thumbnail rounded shadow-sm bg-light">
                             </td>
                             <td class="align-middle">{{ $sponsor->name }}</td>
                             <td class="align-middle"><a href="{{ $sponsor->link }}" target="_blank" class="text-primary">{{ $sponsor->link }}</a></td>

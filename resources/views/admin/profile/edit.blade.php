@@ -11,7 +11,7 @@
             <div class="card-body box-profile">
                 <div class="text-center">
                     <img class="profile-user-img img-fluid img-circle"
-                         src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&size=128&background=007bff&color=fff' }}"
+                         src="{{ Auth::user()->photo ? asset(Auth::user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&size=128&background=007bff&color=fff' }}"
                          alt="User profile picture"
                          style="width: 128px; height: 128px; object-fit: cover;">
                 </div>

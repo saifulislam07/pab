@@ -23,7 +23,7 @@
                         <label>Image</label>
                         <input type="file" name="image" class="form-control-file">
                         @if($team->image)
-                            <img src="{{ asset('storage/' . $team->image) }}" width="100" class="mt-2 img-thumbnail">
+                            <img src="{{ asset($team->image) }}" width="100" class="mt-2 img-thumbnail">
                         @endif
                     </div>
                     <div class="row">

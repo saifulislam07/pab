@@ -29,7 +29,7 @@
                         <label>Image</label>
                         <input type="file" name="image" class="form-control-file">
                         <div class="mt-2">
-                            <img src="{{ Str::startsWith($gallery->image, 'http') ? $gallery->image : asset('storage/' . $gallery->image) }}" width="150" class="img-thumbnail">
+                            <img src="{{ Str::startsWith($gallery->image, 'http') ? $gallery->image : asset($gallery->image) }}" width="150" class="img-thumbnail">
                         </div>
                     </div>
 

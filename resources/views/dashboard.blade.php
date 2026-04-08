@@ -154,7 +154,7 @@
                     @forelse($recent_member_requests as $member)
                         <li class="item py-3">
                             <div class="product-img">
-                                <img src="{{ $member->photo ? asset('storage/' . $member->photo) : 'https://ui-avatars.com/api/?name=' . urlencode($member->name) . '&background=f3f4f6&color=111827' }}" alt="User Image" class="img-size-50 rounded-circle shadow-sm">
+                                <img src="{{ $member->photo ? asset($member->photo) : 'https://ui-avatars.com/api/?name=' . urlencode($member->name) . '&background=f3f4f6&color=111827' }}" alt="User Image" class="img-size-50 rounded-circle shadow-sm">
                             </div>
                             <div class="product-info ml-3">
                                 <a href="{{ route('admin.members.show', $member->id) }}" class="product-title font-weight-bold text-gray-900">

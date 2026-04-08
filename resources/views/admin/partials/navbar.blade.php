@@ -14,7 +14,7 @@
         <!-- Profile Link -->
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
-                <img src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&size=30&background=007bff&color=fff' }}"
+                <img src="{{ Auth::user()->photo ? asset(Auth::user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&size=30&background=007bff&color=fff' }}"
                      class="img-circle" alt="User"
                      style="width: 28px; height: 28px; object-fit: cover; margin-top: -4px;">
                 <span class="d-none d-md-inline ml-1">{{ Auth::user()->name }}</span>

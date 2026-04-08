@@ -13,7 +13,7 @@
             @foreach($members as $member)
                 <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg group hover:-translate-y-2 transition duration-300 animate-fade-in">
                     <div class="relative h-80 overflow-hidden">
-                        <img src="{{ Str::startsWith($member->image, 'http') ? $member->image : asset('storage/' . $member->image) }}" alt="{{ $member->name }}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                        <img src="{{ Str::startsWith($member->image, 'http') ? $member->image : asset($member->image) }}" alt="{{ $member->name }}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end justify-center pb-4">
                             <div class="flex space-x-4">
                                 @if($member->facebook)

@@ -23,7 +23,7 @@
                         <label>Banner Image</label>
                         <input type="file" name="image" class="form-control-file">
                         @if($event->image)
-                            <img src="{{ asset('storage/' . $event->image) }}" width="150" class="mt-2 img-thumbnail">
+                            <img src="{{ asset($event->image) }}" width="150" class="mt-2 img-thumbnail">
                         @endif
                     </div>
                     <div class="row">

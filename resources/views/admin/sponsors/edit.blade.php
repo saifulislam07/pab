@@ -18,7 +18,7 @@
                     <div class="form-group">
                         <label>Logo</label>
                         <input type="file" name="logo" class="form-control-file">
-                        <img src="{{ \Illuminate\Support\Str::startsWith($sponsor->logo, 'http') ? $sponsor->logo : asset('storage/' . $sponsor->logo) }}" width="100" class="mt-2 img-thumbnail">
+                        <img src="{{ \Illuminate\Support\Str::startsWith($sponsor->logo, 'http') ? $sponsor->logo : asset($sponsor->logo) }}" width="100" class="mt-2 img-thumbnail">
                     </div>
                     <div class="form-group">
                         <label>Website Link (Optional)</label>

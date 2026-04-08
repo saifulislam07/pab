@@ -71,7 +71,7 @@
                             </td>
                             <td>
                                 @if($event->image)
-                                    <img src="{{ \Illuminate\Support\Str::startsWith($event->image, 'http') ? $event->image : asset('storage/' . $event->image) }}" width="60" class="img-thumbnail rounded shadow-sm">
+                                    <img src="{{ \Illuminate\Support\Str::startsWith($event->image, 'http') ? $event->image : asset($event->image) }}" width="60" class="img-thumbnail rounded shadow-sm">
                                 @else
                                     <span class="text-muted">No Image</span>
                                 @endif

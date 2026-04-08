@@ -122,7 +122,7 @@
                             <div class="row align-items-center">
                                 <div class="col-md-2 text-center">
                                     @if($member->image)
-                                        <img src="{{ asset('storage/' . $member->image) }}" alt="Profile"
+                                        <img src="{{ asset($member->image) }}" alt="Profile"
                                             class="img-circle elevation-2" style="width: 80px; height: 80px; object-fit: cover;">
                                         <br><small class="text-muted">Current Photo</small>
                                     @else

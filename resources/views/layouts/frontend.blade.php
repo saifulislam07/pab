@@ -8,7 +8,7 @@
     <title>{{ $site_setting->site_title ?? config('app.name', 'Photography Association Bangladesh') }}</title>
 
     @if($site_setting->favicon)
-        <link rel="icon" type="image/png" href="{{ asset('storage/' . $site_setting->favicon) }}">
+        <link rel="icon" type="image/png" href="{{ asset($site_setting->favicon) }}">
     @endif
 
     <!-- Fonts -->
@@ -59,7 +59,7 @@
                         <div class="shrink-0 flex items-center">
                             <a href="{{ route('home') }}">
                                 @if(isset($site_setting->logo))
-                                    <img src="{{ asset('storage/' . $site_setting->logo) }}" alt="{{ $site_setting->site_name }}" class="h-10 sm:h-16 w-auto">
+                                    <img src="{{ asset($site_setting->logo) }}" alt="{{ $site_setting->site_name }}" class="h-10 sm:h-16 w-auto">
                                 @else
                                     <img src="{{ asset('images/logo.svg') }}" alt="PAB Logo" class="h-16 w-auto">
                                 @endif
@@ -179,7 +179,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div class="col-span-1 md:col-span-2">
                     @if(optional($site_setting)->logo)
-                        <img src="{{ asset('storage/' . $site_setting->logo) }}" alt="{{ optional($site_setting)->site_name }}" class="h-16 w-auto">
+                        <img src="{{ asset($site_setting->logo) }}" alt="{{ optional($site_setting)->site_name }}" class="h-16 w-auto">
                     @else
                         <img src="{{ asset('images/logo.svg') }}" alt="PAB Logo" class="h-16 w-auto">
                     @endif

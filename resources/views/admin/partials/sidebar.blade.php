@@ -2,7 +2,7 @@
     <!-- Brand Logo -->
     <a href="{{ route('dashboard') }}" class="brand-link">
         @if(isset($site_setting->logo) && $site_setting->logo)
-            <img src="{{ asset('storage/' . $site_setting->logo) }}" alt="{{ $site_setting->site_name ?? config('app.name') }}" class="brand-image img-circle elevation-3" style="opacity: .8">
+            <img src="{{ asset($site_setting->logo) }}" alt="{{ $site_setting->site_name ?? config('app.name') }}" class="brand-image img-circle elevation-3" style="opacity: .8">
         @else
             <i class="fas fa-camera brand-image img-circle elevation-3 text-center" style="line-height: 33px; font-size: 18px; opacity: .8;"></i>
         @endif
@@ -14,7 +14,7 @@
         <!-- Sidebar user panel -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&size=40&background=007bff&color=fff' }}"
+                <img src="{{ Auth::user()->photo ? asset(Auth::user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&size=40&background=007bff&color=fff' }}"
                      class="img-circle elevation-2" alt="User Image"
                      style="width: 34px; height: 34px; object-fit: cover;">
             </div>

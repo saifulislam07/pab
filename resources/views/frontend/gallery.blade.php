@@ -10,7 +10,7 @@
         loading: false,
         hasMore: {{ $items->hasMorePages() ? 'true' : 'false' }},
         items: {{ Js::from($items->map(function($item) {
-            $item->image_url = Str::startsWith($item->image, 'http') ? $item->image : asset('storage/' . $item->image);
+            $item->image_url = Str::startsWith($item->image, 'http') ? $item->image : asset($item->image);
             $item->category_slug = $item->category->slug ?? 'all';
             return $item;
         })) }},

@@ -82,7 +82,7 @@
                             </td>
                             <td>
                                 @if($program->image)
-                                    <img src="{{ \Illuminate\Support\Str::startsWith($program->image, 'http') ? $program->image : asset('storage/' . $program->image) }}" width="60" class="img-thumbnail rounded shadow-sm">
+                                    <img src="{{ \Illuminate\Support\Str::startsWith($program->image, 'http') ? $program->image : asset($program->image) }}" width="60" class="img-thumbnail rounded shadow-sm">
                                 @else
                                     <span class="text-muted">No Image</span>
                                 @endif

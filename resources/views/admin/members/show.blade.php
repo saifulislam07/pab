@@ -48,7 +48,7 @@
                 <div class="text-center">
                     @if($member->image)
                         <img class="profile-user-img img-fluid img-circle"
-                             src="{{ asset('storage/' . $member->image) }}"
+                             src="{{ asset($member->image) }}"
                              alt="User profile picture">
                     @else
                         <img class="profile-user-img img-fluid img-circle"

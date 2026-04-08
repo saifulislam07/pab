@@ -44,7 +44,7 @@
                                 <input type="file" name="mission_image" class="form-control-file">
                                 @if(isset($content->mission_image))
                                     <div class="mt-2">
-                                        <img src="{{ Str::startsWith($content->mission_image, 'http') ? $content->mission_image : asset('storage/' . $content->mission_image) }}" alt="Mission" width="150" class="rounded shadow-sm">
+                                        <img src="{{ Str::startsWith($content->mission_image, 'http') ? $content->mission_image : asset($content->mission_image) }}" alt="Mission" width="150" class="rounded shadow-sm">
                                     </div>
                                 @endif
                                 <small class="text-muted">Recommended: 800x600px</small>
@@ -79,7 +79,7 @@
                                 <input type="file" name="vision_image" class="form-control-file">
                                 @if(isset($content->vision_image))
                                     <div class="mt-2">
-                                        <img src="{{ Str::startsWith($content->vision_image, 'http') ? $content->vision_image : asset('storage/' . $content->vision_image) }}" alt="Vision" width="150" class="rounded shadow-sm">
+                                        <img src="{{ Str::startsWith($content->vision_image, 'http') ? $content->vision_image : asset($content->vision_image) }}" alt="Vision" width="150" class="rounded shadow-sm">
                                     </div>
                                 @endif
                                 <small class="text-muted">Recommended: 800x600px</small>
